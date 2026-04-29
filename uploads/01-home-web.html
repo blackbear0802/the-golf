@@ -1,0 +1,794 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 · 홈 (웹)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700&display=swap');
+
+:root {
+  --color-primary:       #163028;
+  --color-primary-hover: #204a3c;
+  --color-primary-deep:  #0d1f19;
+  --color-accent:        #c9a227;
+  --color-accent-hover:  #b08d1f;
+  --color-accent-soft:   #e4c46a;
+  --color-surface:       #ffffff;
+  --color-background:    #f8f6f1;
+  --color-paper:         #faf8f3;
+  --color-gray-50:  #f6f5f1;
+  --color-gray-100: #eae8e0;
+  --color-gray-200: #d9d6cc;
+  --color-gray-500: #6b7280;
+  --color-gray-700: #3f4a44;
+  --color-gray-900: #111613;
+  --color-error:   #dc2626;
+  --font-display: 'Noto Serif KR', serif;
+  --font-body:    'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-en:      'Inter', 'SF Pro Display', sans-serif;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  20px;
+  --radius-pill: 9999px;
+  --shadow-card:       0 1px 2px rgba(22,48,40,.06), 0 2px 8px rgba(22,48,40,.04);
+  --shadow-card-hover: 0 8px 28px rgba(22,48,40,.14), 0 2px 6px rgba(22,48,40,.06);
+  --shadow-float:      0 10px 28px rgba(201,162,39,.35), 0 4px 10px rgba(0,0,0,.12);
+  --max-w: 1200px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-background);
+  color: var(--color-gray-900);
+  min-height: 100vh;
+}
+
+.screen-label{position:fixed;top:8px;right:8px;background:var(--color-accent);color:var(--color-primary-deep);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--radius-pill);z-index:999}
+
+/* HEADER */
+header {
+  background: var(--color-primary);
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.logo {
+  font-family: var(--font-display);
+  color: var(--color-accent);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+nav.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.nav-link {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav-link:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.nav-link.active { color: #fff; font-weight: 600; }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.btn-ghost-sm {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  background: none;
+  border: none;
+  padding: 6px 4px;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.btn-login {
+  font-size: 13px;
+  color: var(--color-accent);
+  background: none;
+  border: 1px solid var(--color-accent);
+  padding: 7px 18px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+.btn-login:hover { background: var(--color-accent); color: var(--color-primary-deep); }
+.btn-kakao {
+  font-size: 13px;
+  font-weight: 700;
+  color: #391b1b;
+  background: #fee500;
+  border: none;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-family: var(--font-body);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 특가 띠 */
+.deal-strip {
+  background: var(--color-accent);
+  padding: 9px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+.deal-strip-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary-deep);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.deal-strip-divider { width: 1px; height: 14px; background: rgba(13,31,25,0.25); }
+.deal-strip-countdown {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary-deep);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-en);
+}
+.countdown-pill {
+  background: var(--color-primary-deep);
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.04em;
+}
+.deal-strip-cta {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary-deep);
+  text-decoration: underline;
+  cursor: pointer;
+  opacity: 0.65;
+}
+
+/* HERO */
+.hero {
+  min-height: calc(100vh - 64px - 38px);
+  background: linear-gradient(160deg, var(--color-primary-deep) 0%, var(--color-primary) 55%, #1e4a38 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 110%, rgba(30,74,56,0.6) 0%, transparent 65%),
+    radial-gradient(ellipse 30% 40% at 10% 20%, rgba(201,162,39,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 40% at 90% 15%, rgba(26,107,58,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-decoration {
+  position: absolute;
+  right: 4%;
+  bottom: -40px;
+  font-size: 260px;
+  opacity: 0.04;
+  transform: rotate(-12deg);
+  user-select: none;
+  pointer-events: none;
+}
+.hero-center {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.eyebrow-line { width: 24px; height: 1px; background: var(--color-accent); opacity: 0.6; }
+.eyebrow-text {
+  font-size: 11px;
+  color: var(--color-accent-soft);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: 48px;
+  color: #fff;
+  line-height: 1.2;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+.hero-title strong { color: var(--color-accent); font-weight: 700; }
+.hero-subtitle {
+  font-size: 15px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+/* 채팅 입력창 */
+.chat-input-main {
+  width: 100%;
+  background: #fff;
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.12);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.chat-input-main:focus-within {
+  box-shadow: 0 12px 48px rgba(0,0,0,0.3), 0 0 0 2px var(--color-accent);
+}
+.chat-input-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 6px 6px 22px;
+  gap: 10px;
+  min-height: 68px;
+}
+.chat-input-icon { font-size: 20px; flex-shrink: 0; opacity: 0.5; }
+.chat-input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  font-family: var(--font-body);
+  color: var(--color-gray-900);
+  background: transparent;
+  line-height: 1.5;
+  min-height: 28px;
+}
+.chat-input-field::placeholder { color: var(--color-gray-500); }
+.chat-send-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.chat-send-btn:hover { background: var(--color-primary-hover); }
+.chat-send-btn svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2.2; }
+.chat-divider { height: 1px; background: var(--color-gray-100); margin: 0 16px; }
+.chat-examples {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.chat-examples::-webkit-scrollbar { display: none; }
+.chat-example-label { font-size: 12px; color: var(--color-gray-500); white-space: nowrap; flex-shrink: 0; }
+.chat-example-chip {
+  font-size: 13px;
+  color: var(--color-gray-700);
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.chat-example-chip:hover { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+.chat-example-chip.hot { color: var(--color-error); background: #fff5f5; border-color: #fecaca; }
+.chat-example-chip.hot:hover { background: var(--color-error); color: #fff; border-color: var(--color-error); }
+
+/* 히어로 통계 */
+.hero-stats { display: flex; gap: 36px; margin-top: 8px; }
+.stat-item { text-align: center; }
+.stat-num { font-family: var(--font-en); font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.85); }
+.stat-label { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+.stat-divider { width: 1px; background: rgba(255,255,255,0.1); align-self: stretch; }
+
+/* 스크롤 힌트 */
+.scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+  cursor: pointer;
+  opacity: 1;
+}
+.scroll-hint:hover { opacity: 0.75; }
+.scroll-hint-text { font-size: 13px; font-weight: 700; color: var(--color-accent); letter-spacing: 0.06em; }
+.scroll-arrow { width: 22px; height: 22px; animation: bounce-down 1.6s ease-in-out infinite; }
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* 메인 콘텐츠 */
+.main-content {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 52px 32px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+.section-eyebrow {
+  font-size: 11px;
+  color: var(--color-accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--color-gray-900);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hot-badge {
+  font-family: var(--font-body);
+  font-size: 12px;
+  background: #fee2e2;
+  color: var(--color-error);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+.section-more {
+  font-size: 13px;
+  color: var(--color-gray-500);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+.section-more:hover { color: var(--color-primary); }
+
+/* 특가 카드 3열 그리드 */
+.deal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.deal-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.deal-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.deal-card-img {
+  width: 100%;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  position: relative;
+}
+.deal-card-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13,31,25,0.5) 0%, transparent 60%);
+}
+.deal-img-bottom {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  right: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.country-pill {
+  font-size: 11px;
+  color: #fff;
+  background: rgba(22,48,40,0.7);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(4px);
+}
+.slots-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(220,38,38,0.85);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(4px);
+}
+.deal-card-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 6px; }
+.deal-card-title { font-size: 16px; font-weight: 600; color: var(--color-gray-900); line-height: 1.35; }
+.deal-card-meta { font-size: 13px; color: var(--color-gray-500); }
+.deal-card-includes { display: flex; gap: 6px; flex-wrap: wrap; }
+.include-tag {
+  font-size: 11px;
+  color: var(--color-primary);
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+.slots-row { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.slots-text { font-size: 12px; color: var(--color-error); font-weight: 600; white-space: nowrap; }
+.slots-bar { flex: 1; height: 3px; background: var(--color-gray-100); border-radius: 2px; overflow: hidden; }
+.slots-fill { height: 100%; background: var(--color-error); border-radius: 2px; }
+.deal-card-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-gray-100);
+}
+.price-wrap { display: flex; flex-direction: column; }
+.price-original { font-family: var(--font-en); font-size: 12px; color: var(--color-gray-500); text-decoration: line-through; }
+.price-deal { font-family: var(--font-en); font-size: 22px; font-weight: 700; color: var(--color-error); line-height: 1.1; }
+.price-unit { font-size: 12px; font-family: var(--font-body); font-weight: 400; color: var(--color-gray-500); }
+.discount-badge { background: var(--color-error); color: #fff; font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: var(--radius-sm); font-family: var(--font-en); }
+.btn-book {
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  min-height: 40px;
+}
+.btn-book:hover { background: var(--color-primary-hover); }
+
+/* 여행지 5열 */
+.dest-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.dest-card {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+}
+.dest-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.dest-card-img {
+  aspect-ratio: 3/4;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  position: relative;
+}
+.dest-bg { position: absolute; inset: 0; }
+.dest-card-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13,31,25,0.85) 0%, rgba(13,31,25,0.05) 60%);
+}
+.dest-info { position: relative; z-index: 1; }
+.dest-flag { font-size: 20px; margin-bottom: 4px; }
+.dest-name { font-family: var(--font-display); font-size: 16px; color: #fff; font-weight: 700; }
+.dest-price-from { font-family: var(--font-en); font-size: 12px; color: var(--color-accent-soft); margin-top: 2px; }
+.dest-courses { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+/* 신뢰 섹션 */
+.trust-section {
+  background: var(--color-primary);
+  border-radius: var(--radius-2xl);
+  padding: 48px 52px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.trust-copy h2 { font-family: var(--font-display); font-size: 28px; color: #fff; font-weight: 400; line-height: 1.35; margin-bottom: 12px; }
+.trust-copy p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+.trust-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.trust-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); padding: 20px; }
+.trust-num { font-family: var(--font-en); font-size: 28px; font-weight: 700; color: var(--color-accent); }
+.trust-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; line-height: 1.4; }
+
+/* 리뷰 */
+.review-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.review-card { background: var(--color-surface); border-radius: var(--radius-xl); padding: 20px; box-shadow: var(--shadow-card); }
+.review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.review-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-accent); font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+.review-meta { flex: 1; }
+.review-name { font-size: 14px; font-weight: 600; color: var(--color-gray-900); }
+.review-trip { font-size: 12px; color: var(--color-gray-500); margin-top: 1px; }
+.review-stars { font-size: 13px; color: var(--color-accent); }
+.review-text { font-size: 14px; color: var(--color-gray-700); line-height: 1.65; }
+
+/* Footer */
+footer { background: var(--color-primary-deep); padding: 48px 32px 32px; }
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.footer-logo { font-family: var(--font-display); color: var(--color-accent); font-size: 18px; font-weight: 700; letter-spacing: 0.14em; margin-bottom: 12px; }
+.footer-desc { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.65; }
+.footer-col h4 { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+.footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,0.5); text-decoration: none; margin-bottom: 8px; cursor: pointer; }
+.footer-col a:hover { color: rgba(255,255,255,0.8); }
+.footer-bottom { max-width: var(--max-w); margin: 28px auto 0; display: flex; align-items: center; justify-content: space-between; }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 12px; color: rgba(255,255,255,0.25); text-decoration: none; cursor: pointer; }
+.footer-links a:hover { color: rgba(255,255,255,0.5); }
+</style>
+</head>
+<body>
+
+<div class="screen-label">01 · 홈 (웹)</div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">THE GOLF</div>
+    <nav class="main-nav">
+      <a class="nav-link active">홈</a>
+      <a class="nav-link">골프 여행 탐색</a>
+      <a class="nav-link">이번 주 특가 🔥</a>
+      <a class="nav-link">동행 매칭</a>
+      <a class="nav-link">스코어카드</a>
+    </nav>
+    <div class="header-right">
+      <button class="btn-ghost-sm">예약 확인</button>
+      <button class="btn-login">로그인</button>
+      <button class="btn-kakao">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#391b1b"><path d="M12 3C6.48 3 2 6.48 2 10.8c0 2.7 1.62 5.1 4.08 6.6L5.4 21l4.5-2.4c.69.12 1.41.18 2.1.18 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/></svg>
+        카카오로 시작
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="deal-strip">
+  <div class="deal-strip-text">⚡ 이번 주 특가 — 태국·베트남·필리핀 최대 32% 할인 중</div>
+  <div class="deal-strip-divider"></div>
+  <div class="deal-strip-countdown">마감까지 <span class="countdown-pill">2일 14 : 32</span></div>
+  <div class="deal-strip-divider"></div>
+  <div class="deal-strip-cta">특가 전체보기 →</div>
+</div>
+
+<section class="hero">
+  <div class="hero-decoration">⛳</div>
+  <div class="hero-center">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      <span class="eyebrow-text">AI 골프 여행 플래너</span>
+      <span class="eyebrow-line"></span>
+    </div>
+    <h1 class="hero-title">어디로 떠나고 싶으세요?<br><strong>특가로 찾아드릴게요.</strong></h1>
+    <p class="hero-subtitle">나라, 예산, 인원수만 말씀하세요</p>
+    <div class="chat-input-main">
+      <div class="chat-input-row">
+        <span class="chat-input-icon">⛳</span>
+        <input class="chat-input-field" type="text" placeholder="예) 태국 3박 4일, 4명, 100만원 이하로 찾아줘">
+        <button class="chat-send-btn">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="chat-divider"></div>
+      <div class="chat-examples">
+        <span class="chat-example-label">예시</span>
+        <button class="chat-example-chip hot">🔥 이번 주 특가 보여줘</button>
+        <button class="chat-example-chip">🇹🇭 태국 100만원 이하</button>
+        <button class="chat-example-chip">🇻🇳 다낭 5월 출발</button>
+        <button class="chat-example-chip">비행 포함 3박</button>
+        <button class="chat-example-chip">4명 동반 추천</button>
+        <button class="chat-example-chip hot">⚡ 잔여 좌석 있는 패키지</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">2,400+</div><div class="stat-label">누적 예약</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">4.8 ★</div><div class="stat-label">고객 만족도</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">5개국</div><div class="stat-label">직접 소싱</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.querySelector('.main-content').scrollIntoView({behavior:'smooth'})">
+    <span class="scroll-hint-text">이번 주 특가 보기</span>
+    <svg class="scroll-arrow" viewBox="0 0 20 20" fill="none" stroke="#c9a227" stroke-width="2.5"><polyline points="4 7 10 13 16 7"/></svg>
+  </div>
+</section>
+
+<div class="main-content">
+  <!-- 이번 주 특가 -->
+  <section>
+    <div class="section-head">
+      <div>
+        <p class="section-eyebrow">이번 주 특가</p>
+        <h2 class="section-title">지금 할인 중인 패키지 <span class="hot-badge">🔥 HOT</span></h2>
+      </div>
+      <a href="#" class="section-more">전체보기 →</a>
+    </div>
+    <div class="deal-grid">
+      <div class="deal-card">
+        <div class="deal-card-img" style="background:linear-gradient(135deg,#1a6b3a,#0d4a28)">⛳
+          <div class="deal-img-bottom"><span class="country-pill">🇹🇭 태국 · 치앙마이</span><span class="slots-badge">⚠ 잔여 3자리</span></div>
+        </div>
+        <div class="deal-card-body">
+          <div class="deal-card-title">치앙마이 3박 4일<br>3라운드 골프 패키지</div>
+          <div class="deal-card-meta">5월 출발 기준</div>
+          <div class="deal-card-includes"><span class="include-tag">그린피 3R</span><span class="include-tag">캐디 포함</span><span class="include-tag">숙박 포함</span></div>
+          <div class="slots-row"><span class="slots-text">⚠ 잔여 3자리</span><div class="slots-bar"><div class="slots-fill" style="width:70%"></div></div></div>
+          <div class="deal-card-bottom">
+            <div class="price-wrap"><span class="price-original">128만원</span><span class="price-deal">89<span class="price-unit">만원~</span></span></div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><span class="discount-badge">-30%</span><button class="btn-book">예약 문의</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="deal-card">
+        <div class="deal-card-img" style="background:linear-gradient(135deg,#1a4d6e,#0d2a40)">⛳
+          <div class="deal-img-bottom"><span class="country-pill">🇻🇳 베트남 · 다낭</span><span class="slots-badge">⚠ 잔여 5자리</span></div>
+        </div>
+        <div class="deal-card-body">
+          <div class="deal-card-title">다낭 해변 골프 4박 5일<br>프리미엄 코스</div>
+          <div class="deal-card-meta">5월 출발 기준</div>
+          <div class="deal-card-includes"><span class="include-tag">그린피 3R</span><span class="include-tag">호텔 포함</span></div>
+          <div class="slots-row"><span class="slots-text">⚠ 잔여 5자리</span><div class="slots-bar"><div class="slots-fill" style="width:50%"></div></div></div>
+          <div class="deal-card-bottom">
+            <div class="price-wrap"><span class="price-original">168만원</span><span class="price-deal">115<span class="price-unit">만원~</span></span></div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><span class="discount-badge">-32%</span><button class="btn-book">예약 문의</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="deal-card">
+        <div class="deal-card-img" style="background:linear-gradient(135deg,#2a3a6e,#151e40)">⛳
+          <div class="deal-img-bottom"><span class="country-pill">🇵🇭 필리핀 · 클라크</span><span class="slots-badge" style="background:rgba(220,38,38,.95)">🔴 마지막 1자리</span></div>
+        </div>
+        <div class="deal-card-body">
+          <div class="deal-card-title">클라크 3박 4일<br>2라운드 + 캐디</div>
+          <div class="deal-card-meta">5월 출발 기준</div>
+          <div class="deal-card-includes"><span class="include-tag">그린피 2R</span><span class="include-tag">캐디 포함</span><span class="include-tag">숙박 포함</span></div>
+          <div class="slots-row"><span class="slots-text" style="color:#dc2626">🔴 마지막 1자리</span><div class="slots-bar"><div class="slots-fill" style="width:93%"></div></div></div>
+          <div class="deal-card-bottom">
+            <div class="price-wrap"><span class="price-original">98만원</span><span class="price-deal">72<span class="price-unit">만원~</span></span></div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><span class="discount-badge">-27%</span><button class="btn-book">예약 문의</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 여행지 -->
+  <section>
+    <div class="section-head">
+      <div><p class="section-eyebrow">Destinations</p><h2 class="section-title">인기 골프 여행지</h2></div>
+      <a href="#" class="section-more">전체 여행지 →</a>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card"><div class="dest-card-img"><div class="dest-bg" style="background:linear-gradient(180deg,#1a6b3a,#0a3d20)"></div><div class="dest-info"><div class="dest-flag">🇹🇭</div><div class="dest-name">태국</div><div class="dest-price-from">89만원~</div><div class="dest-courses">14개 코스</div></div></div></div>
+      <div class="dest-card"><div class="dest-card-img"><div class="dest-bg" style="background:linear-gradient(180deg,#1a4d6e,#0d2a40)"></div><div class="dest-info"><div class="dest-flag">🇻🇳</div><div class="dest-name">베트남</div><div class="dest-price-from">95만원~</div><div class="dest-courses">9개 코스</div></div></div></div>
+      <div class="dest-card"><div class="dest-card-img"><div class="dest-bg" style="background:linear-gradient(180deg,#2a3a6e,#151e40)"></div><div class="dest-info"><div class="dest-flag">🇵🇭</div><div class="dest-name">필리핀</div><div class="dest-price-from">72만원~</div><div class="dest-courses">7개 코스</div></div></div></div>
+      <div class="dest-card"><div class="dest-card-img"><div class="dest-bg" style="background:linear-gradient(180deg,#6e2a2a,#401515)"></div><div class="dest-info"><div class="dest-flag">🇲🇾</div><div class="dest-name">말레이시아</div><div class="dest-price-from">108만원~</div><div class="dest-courses">6개 코스</div></div></div></div>
+      <div class="dest-card"><div class="dest-card-img"><div class="dest-bg" style="background:linear-gradient(180deg,#3f4a44,#1a2020)"></div><div class="dest-info"><div class="dest-flag">🇯🇵</div><div class="dest-name">일본</div><div class="dest-price-from">135만원~</div><div class="dest-courses">5개 코스</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- 신뢰 섹션 -->
+  <div class="trust-section">
+    <div class="trust-copy">
+      <h2>왜 더 골프인가요?</h2>
+      <p>밴드 공급망을 통해 현지 그린피를 직접 소싱합니다. 예약 요청 후 24시간 내 전담 담당자가 연락드리고, 출발까지 모든 과정을 함께합니다.</p>
+    </div>
+    <div class="trust-stats">
+      <div class="trust-item"><div class="trust-num">24h</div><div class="trust-label">예약 후 담당자<br>연락 보장</div></div>
+      <div class="trust-item"><div class="trust-num">100%</div><div class="trust-label">현지 그린피<br>사전 확보</div></div>
+      <div class="trust-item"><div class="trust-num">4.8★</div><div class="trust-label">누적 고객<br>만족도</div></div>
+      <div class="trust-item"><div class="trust-num">2,400+</div><div class="trust-label">누적 예약<br>완료</div></div>
+    </div>
+  </div>
+
+  <!-- 리뷰 -->
+  <section>
+    <div class="section-head">
+      <div><p class="section-eyebrow">Reviews</p><h2 class="section-title">골퍼들의 이야기</h2></div>
+      <a href="#" class="section-more">리뷰 더보기 →</a>
+    </div>
+    <div class="review-grid">
+      <div class="review-card">
+        <div class="review-header"><div class="review-avatar">김</div><div class="review-meta"><div class="review-name">김○○ · 52세</div><div class="review-trip">태국 치앙마이 · 2026.03</div></div><div class="review-stars">★★★★★</div></div>
+        <p class="review-text">"담당자가 세세하게 챙겨줘서 처음 해외 골프 여행인데도 전혀 불안하지 않았습니다. 코스 컨디션도 최상이었어요."</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header"><div class="review-avatar">박</div><div class="review-meta"><div class="review-name">박○○ · 47세</div><div class="review-trip">베트남 다낭 · 2026.02</div></div><div class="review-stars">★★★★★</div></div>
+        <p class="review-text">"AI한테 '다낭 4박, 4명, 150만원 이하'라고 했더니 딱 맞는 패키지를 바로 찾아줬어요. 예약 과정도 너무 간편했습니다."</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header"><div class="review-avatar">이</div><div class="review-meta"><div class="review-name">이○○ · 55세</div><div class="review-trip">필리핀 클라크 · 2026.01</div></div><div class="review-stars">★★★★☆</div></div>
+        <p class="review-text">"특가 알림 받고 바로 예약했는데 비용 대비 만족도가 높았습니다. 캐디 실력도 좋고, 코스 관리 상태가 기대 이상이었어요."</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-logo">THE GOLF</div><p class="footer-desc">골프 여행의 고급스러움을<br>더 많은 골퍼에게.<br>태국·베트남·필리핀·말레이시아·일본</p></div>
+    <div class="footer-col"><h4>여행</h4><a>골프 여행 탐색</a><a>이번 주 특가</a><a>나라별 코스</a><a>동행 매칭</a></div>
+    <div class="footer-col"><h4>서비스</h4><a>예약 확인</a><a>스코어카드</a><a>고객 리뷰</a><a>공지사항</a></div>
+    <div class="footer-col"><h4>회사</h4><a>소개</a><a>고객센터</a><a>개인정보처리방침</a><a>이용약관</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 THE GOLF. All rights reserved.</span>
+    <div class="footer-links"><a>개인정보처리방침</a><a>이용약관</a><a>고객센터</a></div>
+  </div>
+</footer>
+
+</body></html>

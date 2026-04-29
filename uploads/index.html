@@ -1,0 +1,346 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>더 골프 · 화면 목록</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--a:#c9a227;--s:#fff;--bg:#f0eeea;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh}
+
+/* 헤더 */
+.page-header{background:var(--pd);padding:28px 32px 24px}
+.header-logo{font-family:var(--fd);font-size:22px;color:var(--a);font-weight:700;margin-bottom:4px}
+.header-sub{font-size:13px;color:rgba(255,255,255,.45)}
+.header-meta{margin-top:12px;display:flex;gap:16px}
+.header-chip{font-size:11px;font-weight:600;background:rgba(201,162,39,.15);color:var(--a);padding:4px 12px;border-radius:var(--rp)}
+
+/* 콘텐츠 */
+.content{padding:28px 32px 48px;max-width:1200px;margin:0 auto}
+
+/* 섹션 */
+.section-title{font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.12em;margin:28px 0 14px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';flex:1;height:1px;background:var(--g200)}
+
+/* 카드 그리드 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:4px}
+
+/* 화면 카드 */
+.card{background:var(--s);border-radius:var(--rxl);overflow:hidden;box-shadow:0 1px 2px rgba(22,48,40,.06),0 2px 8px rgba(22,48,40,.04);text-decoration:none;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;cursor:pointer}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(22,48,40,.12)}
+.card-thumb{height:100px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative}
+.card-thumb-mobile{background:linear-gradient(135deg,var(--pd),var(--p))}
+.card-thumb-admin{background:linear-gradient(135deg,#1a2a40,#0d1828)}
+.card-thumb-auth{background:linear-gradient(135deg,#2a1a0d,#1a0d06)}
+.screen-num{position:absolute;top:8px;left:8px;font-family:var(--fe);font-size:10px;font-weight:700;color:rgba(255,255,255,.5);background:rgba(0,0,0,.25);padding:2px 7px;border-radius:var(--rp)}
+.card-body{padding:14px}
+.card-title{font-size:14px;font-weight:700;color:var(--g900);margin-bottom:4px}
+.card-desc{font-size:12px;color:var(--g500);line-height:1.5}
+.card-tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 8px;border-radius:var(--rp);background:var(--g100);color:var(--g700)}
+.tag-mobile{background:#e8f0ff;color:#1e40af}
+.tag-admin{background:#f0fdf4;color:#166534}
+.tag-auth{background:#fef3c7;color:#92400e}
+.tag-new{background:#fef9ec;color:#92400e;font-weight:700}
+
+/* 범례 */
+.legend{display:flex;gap:16px;padding:16px 0;border-top:1px solid var(--g100);margin-top:8px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--g500)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+</style></head><body>
+<div class="page-header">
+  <div class="header-logo">THE GOLF</div>
+  <div class="header-sub">더 골프 여행 플랫폼 · 화면 설계 목록</div>
+  <div class="header-meta">
+    <span class="header-chip">16 화면</span>
+    <span class="header-chip">모바일 앱 + 어드민 웹</span>
+    <span class="header-chip">2026.04.28 업데이트</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 홈 -->
+  <div class="section-title">00 · 홈</div>
+  <div class="grid">
+    <a class="card" href="01-home-web.html">
+      <div class="card-thumb" style="background:linear-gradient(160deg,#0d1f19,#163028,#1e4a38)">
+        <span class="screen-num">01</span>
+        🏠
+      </div>
+      <div class="card-body">
+        <div class="card-title">홈 — 웹 (Variant D)</div>
+        <div class="card-desc">Genspark 스타일 챗 히어로 + 특가 띠 + 딜 3열 그리드 + 여행지 5열 + 리뷰</div>
+        <div class="card-tags">
+          <span class="tag" style="background:#e8f5e9;color:#1b5e20">데스크톱</span>
+          <span class="tag">홈</span>
+          <span class="tag" style="background:#fef9ec;color:#92400e">확정 디자인</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 진입 / 인증 -->
+  <div class="section-title">01 · 진입 / 인증</div>
+  <div class="grid">
+    <a class="card" href="02-login.html">
+      <div class="card-thumb card-thumb-auth">
+        <span class="screen-num">02</span>
+        🔐
+      </div>
+      <div class="card-body">
+        <div class="card-title">로그인 / 회원가입</div>
+        <div class="card-desc">카카오 소셜 로그인 우선, 네이버·구글·애플 보조, 이메일 폼 수납</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag tag-auth">인증</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 탐색 / 검색 -->
+  <div class="section-title">02 · 탐색 / 검색</div>
+  <div class="grid">
+    <a class="card" href="03-search-results.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">03</span>
+        🔍
+      </div>
+      <div class="card-body">
+        <div class="card-title">탐색 / 검색 결과</div>
+        <div class="card-desc">AI 채팅 결과 + 필터 칩 + 상품 카드 목록, AI FAB</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">탐색</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="04-product-detail.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">04</span>
+        ⛳
+      </div>
+      <div class="card-body">
+        <div class="card-title">상품 상세</div>
+        <div class="card-desc">히어로 이미지 + 코스 정보 + 취소 정책 표 + 리뷰 + 하단 CTA</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">상품</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 예약 플로우 -->
+  <div class="section-title">03 · 예약 플로우</div>
+  <div class="grid">
+    <a class="card" href="05-booking-request.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">05</span>
+        📝
+      </div>
+      <div class="card-body">
+        <div class="card-title">예약 요청</div>
+        <div class="card-desc">인원 스테퍼 + 날짜 선택 + 추가 요청 + 금액 요약 + CTA (결제 없음)</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">예약</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="06-booking-complete.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">06</span>
+        ✅
+      </div>
+      <div class="card-body">
+        <div class="card-title">예약 완료 (대기)</div>
+        <div class="card-desc">예약번호 발급 + 3단계 SLA 안내 + 카카오 채널 추가 CTA</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">예약</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 나의 여행 -->
+  <div class="section-title">04 · 나의 여행</div>
+  <div class="grid">
+    <a class="card" href="07-my-bookings.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">07</span>
+        📋
+      </div>
+      <div class="card-body">
+        <div class="card-title">예약 내역</div>
+        <div class="card-desc">상태 탭 필터 + 예약 카드 (REQUESTED/ASSIGNED/CONFIRMED/COMPLETED)</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">예약</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="09-scorecard.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">09</span>
+        🏌️
+      </div>
+      <div class="card-body">
+        <div class="card-title">스코어카드</div>
+        <div class="card-desc">전/후반 9홀 그리드 + 색상 코딩 (버디/파/보기/더블) + 총점 요약</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">스코어</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="11-review.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">11</span>
+        ⭐
+      </div>
+      <div class="card-body">
+        <div class="card-title">리뷰 작성</div>
+        <div class="card-desc">별점 + 세부 항목 평가 + 텍스트 후기 + 사진 첨부 + 태그 선택</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">리뷰</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 동행 매칭 -->
+  <div class="section-title">05 · 동행 매칭</div>
+  <div class="grid">
+    <a class="card" href="08-matching.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">08</span>
+        👥
+      </div>
+      <div class="card-body">
+        <div class="card-title">동행 매칭</div>
+        <div class="card-desc">팀 생성 프로모 + 그룹 카드 (멤버 아바타 + 핸디캡) + 참가 신청</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">매칭</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 마이페이지 -->
+  <div class="section-title">06 · 마이페이지</div>
+  <div class="grid">
+    <a class="card" href="10-mypage.html">
+      <div class="card-thumb card-thumb-mobile">
+        <span class="screen-num">10</span>
+        👤
+      </div>
+      <div class="card-body">
+        <div class="card-title">마이페이지</div>
+        <div class="card-desc">프로필 + 핸디캡 인덱스 + 여행 통계 + 예약/리뷰/찜 메뉴 + 설정</div>
+        <div class="card-tags">
+          <span class="tag tag-mobile">모바일</span>
+          <span class="tag">마이</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 어드민 — 운영 -->
+  <div class="section-title">07 · 어드민 · 운영</div>
+  <div class="grid">
+    <a class="card" href="12-admin-crm.html">
+      <div class="card-thumb card-thumb-admin">
+        <span class="screen-num">12</span>
+        📊
+      </div>
+      <div class="card-body">
+        <div class="card-title">예약 배정 CRM</div>
+        <div class="card-desc">매출 KPI + 예약 테이블 (상태별 필터) + 담당자 배정 버튼</div>
+        <div class="card-tags">
+          <span class="tag tag-admin">어드민</span>
+          <span class="tag">CRM</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- 어드민 — 상품 관리 -->
+  <div class="section-title">08 · 어드민 · 상품 관리</div>
+  <div class="grid">
+    <a class="card" href="13-admin-products.html">
+      <div class="card-thumb card-thumb-admin">
+        <span class="screen-num">13</span>
+        📋
+      </div>
+      <div class="card-body">
+        <div class="card-title">상품 목록</div>
+        <div class="card-desc">검색/필터 바 + 통계 + 상품 테이블 (수정/삭제 액션)</div>
+        <div class="card-tags">
+          <span class="tag tag-admin">어드민</span>
+          <span class="tag">상품</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="14-admin-product-create.html">
+      <div class="card-thumb card-thumb-admin">
+        <span class="screen-num">14</span>
+        ➕
+      </div>
+      <div class="card-body">
+        <div class="card-title">상품 등록</div>
+        <div class="card-desc">기본 정보 + 포함 사항 체크박스 + 가격 + 이미지 업로드 + 사이드 설정</div>
+        <div class="card-tags">
+          <span class="tag tag-admin">어드민</span>
+          <span class="tag">상품</span>
+          <span class="tag tag-new">등록</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="15-admin-product-edit.html">
+      <div class="card-thumb card-thumb-admin">
+        <span class="screen-num">15</span>
+        ✏️
+      </div>
+      <div class="card-body">
+        <div class="card-title">상품 수정</div>
+        <div class="card-desc">기존 데이터 pre-fill + 변경 감지 배너 + 변경된 필드 금색 하이라이트</div>
+        <div class="card-tags">
+          <span class="tag tag-admin">어드민</span>
+          <span class="tag">상품</span>
+          <span class="tag tag-new">수정</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="16-admin-product-delete.html">
+      <div class="card-thumb card-thumb-admin" style="background:linear-gradient(135deg,#3a0a0a,#220606)">
+        <span class="screen-num">16</span>
+        🗑
+      </div>
+      <div class="card-body">
+        <div class="card-title">상품 삭제 확인</div>
+        <div class="card-desc">딤 오버레이 모달 + 영향받는 데이터 목록 + 확인 코드 입력 + 영구 삭제 버튼</div>
+        <div class="card-tags">
+          <span class="tag tag-admin">어드민</span>
+          <span class="tag" style="background:#fff1f2;color:#9f1239">삭제</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--p)"></div>모바일 앱 화면 (390px)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a2a40"></div>어드민 웹 화면 (1280px+)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a)"></div>디자인 토큰: #163028 / #c9a227</div>
+  </div>
+</div>
+</body></html>

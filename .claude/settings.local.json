@@ -27,7 +27,8 @@
       "mcp__notebooklm-mcp__source_get_content",
       "Skill(gstack-plan-ceo-review)",
       "Skill(gstack-plan-eng-review)",
-      "Skill(gstack-plan-design-review)"
+      "Skill(gstack-plan-design-review)",
+      "Bash(git add *)"
     ]
   }
 }

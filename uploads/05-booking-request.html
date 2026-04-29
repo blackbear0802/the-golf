@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>05 · 예약 요청</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--ph:#204a3c;--a:#c9a227;--as:#e4c46a;--s:#fff;--bg:#f8f6f1;--pa:#faf8f3;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+.screen-label{position:fixed;top:8px;right:8px;background:var(--a);color:var(--pd);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rp);z-index:999}
+
+header{background:var(--p);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100}
+.back-btn{color:rgba(255,255,255,.7);font-size:22px;cursor:pointer}
+.header-title{font-size:16px;font-weight:600;color:#fff}
+.header-step{font-size:12px;color:rgba(255,255,255,.5)}
+
+/* 상품 요약 카드 */
+.product-summary{background:var(--s);margin:16px;border-radius:var(--rxl);padding:14px;display:flex;gap:12px;box-shadow:0 1px 2px rgba(22,48,40,.06),0 2px 8px rgba(22,48,40,.04)}
+.summary-img{width:60px;height:60px;border-radius:var(--rmd);background:linear-gradient(135deg,#1a6b3a,#163028);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.summary-info{flex:1}
+.summary-title{font-size:14px;font-weight:600;color:var(--g900);margin-bottom:3px;line-height:1.3}
+.summary-meta{font-size:12px;color:var(--g500)}
+.summary-price{font-family:var(--fe);font-size:17px;font-weight:700;color:var(--err)}
+
+/* 폼 섹션 */
+.form-section{background:var(--s);margin:0 0 8px;padding:20px 16px}
+.section-title{font-size:15px;font-weight:700;color:var(--g900);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+.form-group{margin-bottom:18px}
+label{display:block;font-size:13px;font-weight:600;color:var(--g700);margin-bottom:7px}
+.required{color:var(--err);margin-left:3px}
+input,textarea,select{width:100%;border:1.5px solid var(--g200);border-radius:var(--rmd);padding:12px 14px;font-size:15px;font-family:var(--fb);background:var(--pa);outline:none;color:var(--g900)}
+input:focus,textarea:focus,select:focus{border-color:var(--p)}
+textarea{resize:none;min-height:100px;line-height:1.6}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:10px;padding-right:36px}
+
+/* 인원 수 스테퍼 */
+.stepper{display:flex;align-items:center;gap:16px}
+.step-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--g200);background:var(--s);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--p);font-weight:700}
+.step-val{font-family:var(--fe);font-size:20px;font-weight:700;color:var(--g900);min-width:36px;text-align:center}
+
+/* 날짜 선택 */
+.date-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* 안내 박스 */
+.notice-box{background:#f0f9f4;border:1px solid #bbf7d0;border-radius:var(--rmd);padding:12px 14px;font-size:13px;color:var(--p);line-height:1.55}
+
+/* 총 금액 */
+.total-section{background:var(--s);margin:0 0 8px;padding:16px}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--g100)}
+.total-row:last-child{border-bottom:none;padding-top:12px}
+.total-label{font-size:14px;color:var(--g700)}
+.total-val{font-family:var(--fe);font-size:14px;color:var(--g900)}
+.total-sum-label{font-size:15px;font-weight:700;color:var(--g900)}
+.total-sum-val{font-family:var(--fe);font-size:20px;font-weight:700;color:var(--p)}
+
+/* 하단 버튼 */
+.bottom-cta{background:var(--s);border-top:1px solid var(--g100);padding:12px 16px 24px;position:sticky;bottom:0}
+.book-btn{width:100%;height:56px;background:var(--p);color:#fff;border:none;border-radius:var(--rxl);font-size:17px;font-weight:700;font-family:var(--fb);cursor:pointer}
+.cta-sub{text-align:center;font-size:12px;color:var(--g500);margin-top:7px}
+</style></head><body>
+<div class="screen-label">05 · 예약 요청</div>
+
+<header>
+  <span class="back-btn">←</span>
+  <span class="header-title">예약 요청</span>
+  <span class="header-step">1/1</span>
+</header>
+
+<!-- 상품 요약 -->
+<div class="product-summary">
+  <div class="summary-img">⛳</div>
+  <div class="summary-info">
+    <div class="summary-title">치앙마이 3박 4일 3라운드</div>
+    <div class="summary-meta">🇹🇭 태국 · 그린피+캐디+숙박</div>
+  </div>
+  <div class="summary-price">89만원~</div>
+</div>
+
+<!-- 예약 정보 -->
+<div class="form-section">
+  <p class="section-title">👥 예약 정보</p>
+
+  <div class="form-group">
+    <label>인원 수<span class="required">*</span></label>
+    <div class="stepper">
+      <button class="step-btn">−</button>
+      <span class="step-val">4</span>
+      <button class="step-btn">+</button>
+      <span style="font-size:13px;color:var(--g500)">명 (최대 8명)</span>
+    </div>
+  </div>
+
+  <div class="date-grid">
+    <div class="form-group">
+      <label>희망 출발일<span class="required">*</span></label>
+      <input type="date" value="2026-05-15">
+    </div>
+    <div class="form-group">
+      <label>희망 귀국일</label>
+      <input type="date" value="2026-05-18">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>출발 도시<span class="required">*</span></label>
+    <select><option>인천 (ICN)</option><option>김포 (GMP)</option><option>김해 (PUS)</option></select>
+  </div>
+</div>
+
+<!-- 추가 요청 -->
+<div class="form-section">
+  <p class="section-title">📝 추가 요청사항</p>
+  <div class="form-group">
+    <label>특별 요청 (선택)</label>
+    <textarea placeholder="골프 렌탈 장비 필요, 채식 식단, 생일 파티 준비 등 요청사항을 적어주세요."></textarea>
+  </div>
+  <div class="notice-box">
+    💡 예약 요청 후 24시간 내 담당자가 연락드려 세부 일정을 확정합니다. 이 단계에서는 결제가 이루어지지 않습니다.
+  </div>
+</div>
+
+<!-- 금액 요약 -->
+<div class="total-section">
+  <div class="total-row"><span class="total-label">패키지 기본가</span><span class="total-val">89만원 × 4명</span></div>
+  <div class="total-row"><span class="total-label">캐디피</span><span class="total-val">포함</span></div>
+  <div class="total-row"><span class="total-label">숙박 (3박)</span><span class="total-val">포함</span></div>
+  <div class="total-row">
+    <span class="total-sum-label">예상 총액</span>
+    <span class="total-sum-val">356만원~</span>
+  </div>
+</div>
+
+<div class="bottom-cta">
+  <button class="book-btn">예약 요청하기</button>
+  <p class="cta-sub">지금 결제하지 않습니다 · 담당자 확인 후 최종 안내</p>
+</div>
+</body></html>

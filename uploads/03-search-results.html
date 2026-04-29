@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · 탐색/검색결과</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--ph:#204a3c;--a:#c9a227;--as:#e4c46a;--s:#fff;--bg:#f8f6f1;--pa:#faf8f3;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+.screen-label{position:fixed;top:8px;right:8px;background:var(--a);color:var(--pd);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rp);z-index:999}
+
+/* Header + 검색바 */
+.top-area{background:var(--s);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--g100)}
+header{height:56px;display:flex;align-items:center;padding:0 16px;gap:10px;background:var(--p)}
+.back-btn{color:rgba(255,255,255,.7);font-size:22px;cursor:pointer}
+.search-bar{flex:1;height:36px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:var(--rp);display:flex;align-items:center;padding:0 12px;gap:8px}
+.search-bar input{background:none;border:none;outline:none;font-size:14px;color:#fff;flex:1;font-family:var(--fb)}
+.search-bar input::placeholder{color:rgba(255,255,255,.5)}
+
+/* 필터 */
+.filter-row{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.fchip{font-size:12px;color:var(--g700);background:var(--s);border:1.5px solid var(--g200);padding:6px 14px;border-radius:var(--rp);white-space:nowrap;cursor:pointer;min-height:34px;display:flex;align-items:center;gap:4px}
+.fchip.active{background:var(--p);color:#fff;border-color:var(--p)}
+
+/* 결과 요약 */
+.result-summary{padding:12px 16px 4px;font-size:13px;color:var(--g500)}
+.result-summary strong{color:var(--g900)}
+
+/* 카드 리스트 */
+.card-list{padding:0 16px 80px;display:flex;flex-direction:column;gap:12px;padding-top:8px}
+
+.deal-card{background:var(--s);border-radius:var(--rxl);overflow:hidden;display:flex;box-shadow:0 1px 2px rgba(22,48,40,.06),0 2px 8px rgba(22,48,40,.04)}
+.card-img{width:100px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.card-body{flex:1;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.ctag{font-size:11px;color:var(--g500);background:var(--g50);padding:2px 7px;border-radius:var(--rp);display:inline-block;margin-bottom:2px}
+.ctitle{font-size:14px;font-weight:600;color:var(--g900);line-height:1.35}
+.cmeta{font-size:12px;color:var(--g500)}
+.itags{display:flex;gap:4px;flex-wrap:wrap}
+.itag{font-size:11px;color:var(--p);background:var(--g50);border:1px solid var(--g200);padding:2px 6px;border-radius:var(--rp)}
+.card-bottom{display:flex;align-items:flex-end;justify-content:space-between;margin-top:4px}
+.price-orig{font-family:var(--fe);font-size:11px;color:var(--g500);text-decoration:line-through}
+.price-deal{font-family:var(--fe);font-size:18px;font-weight:700;color:var(--err);line-height:1.1}
+.punit{font-size:11px;font-family:var(--fb);font-weight:400;color:var(--g500)}
+.dbadge{background:var(--err);color:#fff;font-size:11px;font-weight:700;padding:3px 7px;border-radius:var(--rsm);font-family:var(--fe)}
+.slots-row{display:flex;align-items:center;gap:6px}
+.slots-txt{font-size:11px;color:var(--err);font-weight:600}
+.slots-bar{flex:1;height:3px;background:var(--g100);border-radius:2px;overflow:hidden}
+.slots-fill{height:100%;background:var(--err);border-radius:2px}
+
+/* 정렬 */
+.sort-row{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 4px}
+.sort-label{font-size:12px;color:var(--g500)}
+.sort-select{font-size:12px;color:var(--p);background:none;border:none;font-family:var(--fb);font-weight:600;cursor:pointer}
+
+/* Bottom Nav */
+nav{background:var(--s);border-top:1px solid var(--g100);height:56px;display:flex;align-items:center;padding:0 8px;position:sticky;bottom:0}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.ni span:first-child{font-size:20px;line-height:1}
+.ni span:last-child{font-size:10px;color:var(--g500)}
+.ni.active span:last-child{color:var(--p);font-weight:600}
+
+/* AI 플로팅 */
+.fab{position:fixed;bottom:68px;right:16px;background:var(--p);color:#fff;border:none;border-radius:var(--rp);padding:10px 18px;font-size:13px;font-weight:600;font-family:var(--fb);cursor:pointer;box-shadow:0 10px 28px rgba(201,162,39,.35),0 4px 10px rgba(0,0,0,.12);display:flex;align-items:center;gap:6px}
+</style></head><body>
+<div class="screen-label">03 · 탐색/검색결과</div>
+
+<div class="top-area">
+  <header>
+    <span class="back-btn">←</span>
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" value="태국 3박 4일 4명" placeholder="검색">
+    </div>
+    <span style="font-size:20px;cursor:pointer;color:rgba(255,255,255,.7)">⚙</span>
+  </header>
+  <div class="filter-row">
+    <div class="fchip active">전체</div>
+    <div class="fchip">🇹🇭 태국</div>
+    <div class="fchip">🇻🇳 베트남</div>
+    <div class="fchip">🇵🇭 필리핀</div>
+    <div class="fchip">100만원 이하</div>
+    <div class="fchip">비행 포함</div>
+    <div class="fchip">3박~4박</div>
+  </div>
+</div>
+
+<div class="sort-row">
+  <span class="result-summary"><strong>12개</strong> 결과</span>
+  <select class="sort-select"><option>가격 낮은 순</option><option>인기순</option><option>최신순</option></select>
+</div>
+
+<div class="card-list">
+
+  <div class="deal-card">
+    <div class="card-img" style="background:linear-gradient(135deg,#1a6b3a,#0d4a28)">⛳</div>
+    <div class="card-body">
+      <span class="ctag">🇹🇭 태국 · 치앙마이</span>
+      <div class="ctitle">치앙마이 3박 4일 3라운드</div>
+      <div class="itags"><span class="itag">그린피</span><span class="itag">캐디</span><span class="itag">숙박</span></div>
+      <div class="slots-row"><span class="slots-txt">⚠ 잔여 3자리</span><div class="slots-bar"><div class="slots-fill" style="width:70%"></div></div></div>
+      <div class="card-bottom">
+        <div><div class="price-orig">128만원</div><div class="price-deal">89<span class="punit">만원~</span></div></div>
+        <span class="dbadge">-30%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="deal-card">
+    <div class="card-img" style="background:linear-gradient(135deg,#1a4d6e,#0d2a40)">⛳</div>
+    <div class="card-body">
+      <span class="ctag">🇻🇳 베트남 · 다낭</span>
+      <div class="ctitle">다낭 3박 4일 2라운드 해변</div>
+      <div class="itags"><span class="itag">그린피</span><span class="itag">캐디</span><span class="itag">숙박</span></div>
+      <div class="slots-row"><span class="slots-txt">⚠ 잔여 5자리</span><div class="slots-bar"><div class="slots-fill" style="width:50%"></div></div></div>
+      <div class="card-bottom">
+        <div><div class="price-orig">125만원</div><div class="price-deal">95<span class="punit">만원~</span></div></div>
+        <span class="dbadge">-24%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="deal-card">
+    <div class="card-img" style="background:linear-gradient(135deg,#2a3a6e,#151e40)">⛳</div>
+    <div class="card-body">
+      <span class="ctag">🇵🇭 필리핀 · 클라크</span>
+      <div class="ctitle">클라크 3박 4일 2라운드</div>
+      <div class="itags"><span class="itag">그린피</span><span class="itag">캐디</span><span class="itag">숙박</span></div>
+      <div class="slots-row"><span class="slots-txt" style="color:#dc2626">🔴 마지막 1자리</span><div class="slots-bar"><div class="slots-fill" style="width:93%"></div></div></div>
+      <div class="card-bottom">
+        <div><div class="price-orig">98만원</div><div class="price-deal">72<span class="punit">만원~</span></div></div>
+        <span class="dbadge">-27%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="deal-card">
+    <div class="card-img" style="background:linear-gradient(135deg,#3a6e1a,#1a4a0a)">⛳</div>
+    <div class="card-body">
+      <span class="ctag">🇲🇾 말레이시아 · KL</span>
+      <div class="ctitle">쿠알라룸푸르 3박 4일 2라운드</div>
+      <div class="itags"><span class="itag">그린피</span><span class="itag">숙박</span></div>
+      <div class="slots-row"><span class="slots-txt">잔여 7자리</span><div class="slots-bar"><div class="slots-fill" style="width:30%;background:var(--p)"></div></div></div>
+      <div class="card-bottom">
+        <div><div class="price-orig"></div><div class="price-deal" style="color:var(--p)">108<span class="punit">만원~</span></div></div>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<button class="fab">✨ AI 추천받기</button>
+
+<nav>
+  <div class="ni"><span>🏠</span><span>홈</span></div>
+  <div class="ni active"><span>🔍</span><span style="color:var(--p);font-weight:600">탐색</span></div>
+  <div class="ni"><span>📋</span><span>예약</span></div>
+  <div class="ni"><span>👥</span><span>매칭</span></div>
+  <div class="ni"><span>👤</span><span>나</span></div>
+</nav>
+</body></html>

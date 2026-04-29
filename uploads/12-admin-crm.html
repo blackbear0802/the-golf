@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>12 · 어드민 CRM</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--a:#c9a227;--as:#e4c46a;--s:#fff;--bg:#f0eeea;--pa:#faf8f3;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex}
+
+/* 사이드바 */
+.sidebar{width:220px;background:var(--pd);min-height:100dvh;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.logo-text{font-family:var(--fd);font-size:16px;color:var(--a);font-weight:700}
+.logo-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
+.nav-group{padding:16px 0}
+.nav-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);padding:0 16px 8px;text-transform:uppercase;letter-spacing:.1em}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;color:rgba(255,255,255,.6);cursor:pointer;border-left:3px solid transparent}
+.nav-item.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--a)}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.05)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-badge{background:var(--err);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:var(--rp);margin-left:auto}
+
+/* 메인 영역 */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;background:var(--s);border-bottom:1px solid var(--g100);display:flex;align-items:center;padding:0 20px;gap:16px}
+.topbar-title{font-size:16px;font-weight:700;color:var(--g900);flex:1}
+.topbar-user{font-size:13px;color:var(--g500)}
+
+/* 콘텐츠 */
+.content{flex:1;padding:20px;overflow-y:auto}
+
+/* 통계 카드 */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--s);border-radius:var(--rxl);padding:16px;box-shadow:0 1px 3px rgba(22,48,40,.06)}
+.sc-label{font-size:12px;color:var(--g500);margin-bottom:6px}
+.sc-num{font-family:var(--fe);font-size:28px;font-weight:700;color:var(--g900)}
+.sc-change{font-size:11px;margin-top:4px}
+.sc-up{color:#16a34a}
+.sc-down{color:var(--err)}
+
+/* 예약 테이블 */
+.table-card{background:var(--s);border-radius:var(--rxl);box-shadow:0 1px 3px rgba(22,48,40,.06);overflow:hidden}
+.table-header{padding:14px 16px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+.table-title{font-size:14px;font-weight:700;color:var(--g900)}
+.filter-row{display:flex;gap:8px}
+.fchip{font-size:12px;padding:5px 12px;border-radius:var(--rp);border:1.5px solid var(--g200);background:var(--s);color:var(--g700);cursor:pointer}
+.fchip.active{background:var(--p);color:#fff;border-color:var(--p)}
+table{width:100%;border-collapse:collapse}
+th{background:var(--g50);padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--g700);white-space:nowrap;border-bottom:1px solid var(--g100)}
+td{padding:12px 12px;font-size:13px;color:var(--g900);border-bottom:1px solid var(--g100);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--g50)}
+.status-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:var(--rp);white-space:nowrap}
+.s-req{background:#fef9ec;color:#92400e}
+.s-asgn{background:#eff6ff;color:#1e40af}
+.s-conf{background:#f0f9f4;color:#166534}
+.s-cmp{background:var(--g50);color:var(--g700)}
+.assign-btn{font-size:12px;font-weight:600;background:var(--p);color:#fff;border:none;padding:5px 12px;border-radius:var(--rmd);cursor:pointer}
+.staff-chip{font-size:11px;background:var(--g100);color:var(--g700);padding:3px 8px;border-radius:var(--rp)}
+.booking-no{font-family:var(--fe);font-size:11px;color:var(--g500)}
+</style></head><body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">THE GOLF</div>
+    <div class="logo-sub">어드민 콘솔</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">운영</div>
+    <div class="nav-item active"><span class="nav-icon">📋</span>예약 CRM<span class="nav-badge">7</span></div>
+    <div class="nav-item"><span class="nav-icon">👥</span>고객 관리</div>
+    <div class="nav-item"><span class="nav-icon">💬</span>문의 / 채팅</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">상품</div>
+    <div class="nav-item"><span class="nav-icon">⛳</span>상품 관리</div>
+    <div class="nav-item"><span class="nav-icon">🏨</span>공급사 관리</div>
+    <div class="nav-item"><span class="nav-icon">⭐</span>리뷰 관리</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">분석</div>
+    <div class="nav-item"><span class="nav-icon">📊</span>매출 분석</div>
+    <div class="nav-item"><span class="nav-icon">🔧</span>시스템 설정</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">예약 배정 CRM</span>
+    <span class="topbar-user">👤 박담당 · 스태프</span>
+  </div>
+
+  <div class="content">
+    <!-- 통계 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="sc-label">오늘 신규 예약</div>
+        <div class="sc-num">7</div>
+        <div class="sc-change sc-up">▲ 3 (어제 대비)</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">배정 대기</div>
+        <div class="sc-num" style="color:var(--err)">3</div>
+        <div class="sc-change" style="color:var(--g500)">24시간 내 배정 필요</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">이번 달 확정</div>
+        <div class="sc-num">42</div>
+        <div class="sc-change sc-up">▲ 12% MoM</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">이번 달 매출</div>
+        <div class="sc-num">2.4억</div>
+        <div class="sc-change sc-up">▲ 8% MoM</div>
+      </div>
+    </div>
+
+    <!-- 예약 테이블 -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">예약 목록</span>
+        <div class="filter-row">
+          <span class="fchip active">전체 (28)</span>
+          <span class="fchip">대기 (3)</span>
+          <span class="fchip">진행중 (18)</span>
+          <span class="fchip">완료 (7)</span>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>예약번호</th>
+            <th>상품</th>
+            <th>고객</th>
+            <th>인원</th>
+            <th>희망 출발</th>
+            <th>금액</th>
+            <th>상태</th>
+            <th>담당자</th>
+            <th>액션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="booking-no">#TG-2026-043821</span></td>
+            <td>치앙마이 3박 4일 3R</td>
+            <td>김민준</td>
+            <td>4명</td>
+            <td>2026.05.15</td>
+            <td style="font-family:var(--fe);font-weight:700">356만원</td>
+            <td><span class="status-pill s-req">대기</span></td>
+            <td>—</td>
+            <td><button class="assign-btn">배정하기</button></td>
+          </tr>
+          <tr>
+            <td><span class="booking-no">#TG-2026-043817</span></td>
+            <td>다낭 4박 5일 3R</td>
+            <td>이수진</td>
+            <td>2명</td>
+            <td>2026.05.20</td>
+            <td style="font-family:var(--fe);font-weight:700">230만원</td>
+            <td><span class="status-pill s-req">대기</span></td>
+            <td>—</td>
+            <td><button class="assign-btn">배정하기</button></td>
+          </tr>
+          <tr>
+            <td><span class="booking-no">#TG-2026-038201</span></td>
+            <td>다낭 4박 5일 3R</td>
+            <td>박지훈</td>
+            <td>2명</td>
+            <td>2026.04.20</td>
+            <td style="font-family:var(--fe);font-weight:700">230만원</td>
+            <td><span class="status-pill s-conf">확정</span></td>
+            <td><span class="staff-chip">김스태프</span></td>
+            <td><button class="assign-btn" style="background:var(--g200);color:var(--g700)">상세보기</button></td>
+          </tr>
+          <tr>
+            <td><span class="booking-no">#TG-2026-043800</span></td>
+            <td>세부 3박 4일 2R</td>
+            <td>최동욱</td>
+            <td>4명</td>
+            <td>2026.05.22</td>
+            <td style="font-family:var(--fe);font-weight:700">312만원</td>
+            <td><span class="status-pill s-req">대기</span></td>
+            <td>—</td>
+            <td><button class="assign-btn">배정하기</button></td>
+          </tr>
+          <tr>
+            <td><span class="booking-no">#TG-2026-040112</span></td>
+            <td>발리 5박 6일 4R</td>
+            <td>정혜린</td>
+            <td>2명</td>
+            <td>2026.05.01</td>
+            <td style="font-family:var(--fe);font-weight:700">418만원</td>
+            <td><span class="status-pill s-asgn">배정됨</span></td>
+            <td><span class="staff-chip">이스태프</span></td>
+            <td><button class="assign-btn" style="background:var(--g200);color:var(--g700)">상세보기</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body></html>

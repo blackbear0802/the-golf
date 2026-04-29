@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>11 · 리뷰 작성</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--a:#c9a227;--as:#e4c46a;--s:#fff;--bg:#f8f6f1;--pa:#faf8f3;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+.screen-label{position:fixed;top:8px;right:8px;background:var(--a);color:var(--pd);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rp);z-index:999}
+header{background:var(--p);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100}
+.header-title{font-size:16px;font-weight:600;color:#fff}
+.back-btn{color:rgba(255,255,255,.7);font-size:22px;cursor:pointer}
+
+/* 예약 요약 */
+.trip-summary{background:var(--s);margin:16px;border-radius:var(--rxl);padding:14px;display:flex;gap:12px;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.trip-img{width:56px;height:56px;border-radius:var(--rmd);background:linear-gradient(135deg,#2a3a6e,#151e40);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.trip-info{flex:1}
+.trip-title{font-size:14px;font-weight:600;color:var(--g900);margin-bottom:3px}
+.trip-meta{font-size:12px;color:var(--g500)}
+
+/* 별점 */
+.rating-section{background:var(--s);margin:0 16px 12px;border-radius:var(--rxl);padding:20px;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.rating-title{font-size:14px;font-weight:700;color:var(--g900);margin-bottom:16px;text-align:center}
+.stars-row{display:flex;justify-content:center;gap:8px;margin-bottom:8px}
+.star{font-size:40px;cursor:pointer;filter:grayscale(1);opacity:.3;transition:all .15s}
+.star.on{filter:none;opacity:1}
+.rating-label{text-align:center;font-size:13px;color:var(--g500)}
+
+/* 세부 평가 */
+.detail-ratings{background:var(--s);margin:0 16px 12px;border-radius:var(--rxl);padding:16px;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.detail-title{font-size:13px;font-weight:700;color:var(--g700);margin-bottom:14px}
+.detail-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.detail-row:last-child{margin-bottom:0}
+.detail-label{font-size:13px;color:var(--g700);min-width:64px}
+.mini-stars{display:flex;gap:4px}
+.mini-star{font-size:20px;cursor:pointer}
+
+/* 텍스트 리뷰 */
+.text-section{background:var(--s);margin:0 16px 12px;border-radius:var(--rxl);padding:16px;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.section-title{font-size:13px;font-weight:700;color:var(--g700);margin-bottom:10px}
+textarea{width:100%;border:1.5px solid var(--g200);border-radius:var(--rmd);padding:12px 14px;font-size:14px;font-family:var(--fb);background:var(--pa);outline:none;color:var(--g900);resize:none;min-height:120px;line-height:1.6}
+textarea:focus{border-color:var(--p)}
+.char-count{font-size:11px;color:var(--g500);text-align:right;margin-top:6px}
+
+/* 사진 첨부 */
+.photo-section{background:var(--s);margin:0 16px 12px;border-radius:var(--rxl);padding:16px;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.photo-add{width:72px;height:72px;border:2px dashed var(--g200);border-radius:var(--rmd);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--g500);font-size:10px;gap:4px}
+.photo-add span:first-child{font-size:24px}
+
+/* 태그 */
+.tag-section{background:var(--s);margin:0 16px 12px;border-radius:var(--rxl);padding:16px;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.rtag{font-size:12px;color:var(--g700);background:var(--g50);border:1.5px solid var(--g200);padding:6px 14px;border-radius:var(--rp);cursor:pointer}
+.rtag.on{background:var(--p);color:#fff;border-color:var(--p)}
+
+/* CTA */
+.bottom-cta{background:var(--s);border-top:1px solid var(--g100);padding:12px 16px 24px;position:sticky;bottom:0}
+.submit-btn{width:100%;height:52px;background:var(--p);color:#fff;border:none;border-radius:var(--rxl);font-size:16px;font-weight:700;font-family:var(--fb);cursor:pointer}
+.cta-note{text-align:center;font-size:12px;color:var(--g500);margin-top:6px}
+</style></head><body>
+<div class="screen-label">11 · 리뷰 작성</div>
+<header>
+  <span class="back-btn">←</span>
+  <span class="header-title">리뷰 작성</span>
+  <span style="width:40px"></span>
+</header>
+
+<!-- 여행 요약 -->
+<div class="trip-summary">
+  <div class="trip-img">⛳</div>
+  <div class="trip-info">
+    <div class="trip-title">클라크 3박 4일 2라운드</div>
+    <div class="trip-meta">🇵🇭 필리핀 · 2026.03.10 ~ 03.13</div>
+  </div>
+</div>
+
+<!-- 별점 -->
+<div class="rating-section">
+  <div class="rating-title">전반적인 만족도는 어떠셨나요?</div>
+  <div class="stars-row">
+    <span class="star">⭐</span>
+    <span class="star on">⭐</span>
+    <span class="star on">⭐</span>
+    <span class="star on">⭐</span>
+    <span class="star on">⭐</span>
+  </div>
+  <div class="rating-label">매우 만족</div>
+</div>
+
+<!-- 세부 평가 -->
+<div class="detail-ratings">
+  <div class="detail-title">세부 항목 평가</div>
+  <div class="detail-row">
+    <span class="detail-label">코스 컨디션</span>
+    <div class="mini-stars"><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star" style="filter:grayscale(1);opacity:.3">⭐</span></div>
+  </div>
+  <div class="detail-row">
+    <span class="detail-label">숙소 품질</span>
+    <div class="mini-stars"><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span></div>
+  </div>
+  <div class="detail-row">
+    <span class="detail-label">가격 대비</span>
+    <div class="mini-stars"><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star" style="filter:grayscale(1);opacity:.3">⭐</span></div>
+  </div>
+  <div class="detail-row">
+    <span class="detail-label">담당자 응대</span>
+    <div class="mini-stars"><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span><span class="mini-star">⭐</span></div>
+  </div>
+</div>
+
+<!-- 텍스트 -->
+<div class="text-section">
+  <div class="section-title">✍️ 자세한 후기를 남겨주세요</div>
+  <textarea placeholder="코스 컨디션, 숙소, 음식, 캐디 등 여행 전반에 대해 솔직하게 적어주세요. 다른 골퍼에게 큰 도움이 됩니다.">클라크 코스가 정말 잘 관리되어 있었습니다. 페어웨이 잔디 상태가 최고였고, 캐디분들도 친절하고 실력도 있었어요.</textarea>
+  <div class="char-count">48 / 500자</div>
+</div>
+
+<!-- 사진 -->
+<div class="photo-section">
+  <div class="section-title">📷 사진 첨부 (선택)</div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <div class="photo-add"><span>+</span><span>사진 추가</span></div>
+  </div>
+</div>
+
+<!-- 태그 -->
+<div class="tag-section">
+  <div class="section-title">🏷 이런 점이 좋았어요</div>
+  <div class="tags">
+    <span class="rtag on">코스 관리 훌륭</span>
+    <span class="rtag on">가성비 최고</span>
+    <span class="rtag">담당자 친절</span>
+    <span class="rtag on">캐디 실력 좋음</span>
+    <span class="rtag">음식 맛있음</span>
+    <span class="rtag">이동 편리</span>
+    <span class="rtag">숙소 깔끔</span>
+    <span class="rtag">또 가고 싶다</span>
+  </div>
+</div>
+
+<div class="bottom-cta">
+  <button class="submit-btn">리뷰 등록하기</button>
+  <p class="cta-note">등록된 리뷰는 수정 후 24시간 내에 게시됩니다</p>
+</div>
+</body></html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>15 · 상품 수정</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--a:#c9a227;--s:#fff;--bg:#f0eeea;--pa:#faf8f3;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex}
+
+.sidebar{width:220px;background:var(--pd);min-height:100dvh;flex-shrink:0;display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.logo-text{font-family:var(--fd);font-size:16px;color:var(--a);font-weight:700}
+.logo-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
+.nav-group{padding:16px 0}
+.nav-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);padding:0 16px 8px;text-transform:uppercase;letter-spacing:.1em}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;color:rgba(255,255,255,.6);cursor:pointer;border-left:3px solid transparent}
+.nav-item.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--a)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+
+.main{flex:1;display:flex;flex-direction:column;min-height:100dvh}
+.topbar{height:56px;background:var(--s);border-bottom:1px solid var(--g100);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0}
+.back-link{font-size:13px;color:var(--p);cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px}
+.topbar-title{font-size:16px;font-weight:700;color:var(--g900);flex:1}
+.topbar-meta{font-size:12px;color:var(--g500)}
+.draft-btn{background:var(--s);color:var(--g700);border:1.5px solid var(--g200);border-radius:var(--rmd);padding:8px 16px;font-size:13px;font-weight:600;font-family:var(--fb);cursor:pointer}
+.save-btn{background:var(--a);color:var(--pd);border:none;border-radius:var(--rmd);padding:8px 16px;font-size:13px;font-weight:700;font-family:var(--fb);cursor:pointer}
+
+/* 변경 알림 배너 */
+.change-banner{background:#fffbec;border-bottom:2px solid var(--a);padding:10px 20px;display:flex;align-items:center;gap:10px;font-size:13px;color:#92400e}
+.banner-dot{width:8px;height:8px;border-radius:50%;background:var(--a);flex-shrink:0}
+
+.content{flex:1;padding:20px;overflow-y:auto;display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+
+.form-card{background:var(--s);border-radius:var(--rxl);padding:20px;box-shadow:0 1px 3px rgba(22,48,40,.06);margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:var(--g900);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--g100);display:flex;align-items:center;gap:8px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{margin-bottom:16px}
+.form-group:last-child{margin-bottom:0}
+label{display:block;font-size:12px;font-weight:700;color:var(--g700);margin-bottom:7px}
+.required{color:var(--err);margin-left:3px}
+input,textarea,select{width:100%;border:1.5px solid var(--g200);border-radius:var(--rmd);padding:10px 14px;font-size:14px;font-family:var(--fb);background:var(--pa);outline:none;color:var(--g900)}
+input:focus,textarea:focus,select:focus{border-color:var(--p)}
+textarea{resize:none;min-height:100px;line-height:1.6}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:10px;padding-right:36px}
+
+/* 변경된 필드 강조 */
+.changed{border-color:var(--a)!important;background:#fffbec!important}
+
+.checkbox-group{display:flex;flex-wrap:wrap;gap:10px}
+.checkbox-item{display:flex;align-items:center;gap:6px;cursor:pointer}
+.checkbox-item input[type=checkbox]{width:auto;accent-color:var(--p)}
+.checkbox-item span{font-size:13px;color:var(--g700)}
+
+.price-input-wrap{position:relative}
+.price-input-wrap input{padding-right:36px}
+.price-suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--g500)}
+
+/* 현재 이미지 */
+.current-img{background:linear-gradient(135deg,#1a6b3a,#163028);height:160px;border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:12px}
+.img-actions{display:flex;gap:8px}
+.img-btn{flex:1;height:36px;border-radius:var(--rmd);border:1.5px solid var(--g200);background:var(--s);color:var(--g700);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--fb)}
+
+.side-card{background:var(--s);border-radius:var(--rxl);padding:16px;box-shadow:0 1px 3px rgba(22,48,40,.06);margin-bottom:12px}
+.side-title{font-size:13px;font-weight:700;color:var(--g700);margin-bottom:12px}
+.meta-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--g100)}
+.meta-row:last-child{border-bottom:none}
+.meta-label{color:var(--g500)}
+.meta-val{font-weight:600;color:var(--g700)}
+.status-select{width:100%;border:1.5px solid var(--g200);border-radius:var(--rmd);padding:10px 14px;font-size:14px;font-family:var(--fb);background:var(--pa);outline:none;color:var(--g900);appearance:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:10px;padding-right:36px}
+.danger-btn{width:100%;height:40px;background:#fff1f2;color:#9f1239;border:1.5px solid #fecdd3;border-radius:var(--rmd);font-size:13px;font-weight:700;font-family:var(--fb);cursor:pointer;margin-top:8px}
+</style></head><body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">THE GOLF</div>
+    <div class="logo-sub">어드민 콘솔</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">운영</div>
+    <div class="nav-item"><span class="nav-icon">📋</span>예약 CRM</div>
+    <div class="nav-item"><span class="nav-icon">👥</span>고객 관리</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">상품</div>
+    <div class="nav-item active"><span class="nav-icon">⛳</span>상품 관리</div>
+    <div class="nav-item"><span class="nav-icon">🏨</span>공급사 관리</div>
+    <div class="nav-item"><span class="nav-icon">⭐</span>리뷰 관리</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">분석</div>
+    <div class="nav-item"><span class="nav-icon">📊</span>매출 분석</div>
+    <div class="nav-item"><span class="nav-icon">🔧</span>시스템 설정</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <span class="back-link" onclick="location.href='13-admin-products.html'">← 상품 목록</span>
+    <span class="topbar-title">상품 수정</span>
+    <span class="topbar-meta"># PROD-001 · 최종 수정 2026.04.20</span>
+    <button class="draft-btn">변경 취소</button>
+    <button class="save-btn">변경 저장</button>
+  </div>
+
+  <!-- 미저장 변경 알림 -->
+  <div class="change-banner">
+    <span class="banner-dot"></span>
+    저장되지 않은 변경사항이 있습니다 — 가격이 수정되었습니다
+  </div>
+
+  <div class="content">
+    <div>
+      <!-- 기본 정보 -->
+      <div class="form-card">
+        <div class="card-title">📝 기본 정보</div>
+        <div class="form-group">
+          <label>상품명<span class="required">*</span></label>
+          <input type="text" value="치앙마이 3박 4일 3라운드 패키지">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>목적지 국가<span class="required">*</span></label>
+            <select><option selected>🇹🇭 태국</option><option>🇻🇳 베트남</option><option>🇵🇭 필리핀</option><option>🇮🇩 인도네시아</option></select>
+          </div>
+          <div class="form-group">
+            <label>도시<span class="required">*</span></label>
+            <input type="text" value="치앙마이">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>숙박 일수<span class="required">*</span></label>
+            <input type="number" value="3">
+          </div>
+          <div class="form-group">
+            <label>라운드 수<span class="required">*</span></label>
+            <input type="number" value="3">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>상품 설명<span class="required">*</span></label>
+          <textarea>치앙마이 최고급 코스에서 즐기는 3박 4일 골프 여행 패키지입니다. 하이랜드 골프 & 스파 리조트를 포함한 프리미엄 코스 3곳에서 라운드를 즐기실 수 있습니다.</textarea>
+        </div>
+      </div>
+
+      <!-- 포함 사항 -->
+      <div class="form-card">
+        <div class="card-title">✅ 포함 사항</div>
+        <div class="form-group">
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" checked><span>항공권 포함</span></label>
+            <label class="checkbox-item"><input type="checkbox" checked><span>숙박 포함</span></label>
+            <label class="checkbox-item"><input type="checkbox" checked><span>캐디피 포함</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span>골프 카트 포함</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span>그린피 별도</span></label>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label>포함 코스</label>
+          <input type="text" value="하이랜드 골프 & 스파, 파인 힐스 CC, 가산 CC">
+        </div>
+      </div>
+
+      <!-- 가격 (변경됨) -->
+      <div class="form-card">
+        <div class="card-title">💰 가격 설정 <span style="font-size:11px;font-weight:600;background:#fffbec;color:#92400e;padding:2px 8px;border-radius:var(--rp)">변경됨</span></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>기본 가격 (1인 기준)<span class="required">*</span></label>
+            <div class="price-input-wrap">
+              <input class="changed" type="number" value="849000">
+              <span class="price-suffix">원</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>최소 인원</label>
+            <input type="number" value="2">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>최대 인원</label>
+            <input type="number" value="8">
+          </div>
+          <div class="form-group">
+            <label>특가 표시가</label>
+            <div class="price-input-wrap">
+              <input type="number" value="799000">
+              <span class="price-suffix">원</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 이미지 -->
+      <div class="form-card">
+        <div class="card-title">🖼 대표 이미지</div>
+        <div class="current-img">⛳</div>
+        <div class="img-actions">
+          <button class="img-btn">이미지 교체</button>
+          <button class="img-btn">이미지 삭제</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 사이드 -->
+    <div>
+      <div class="side-card">
+        <div class="side-title">📋 상품 정보</div>
+        <div class="meta-row"><span class="meta-label">상품 ID</span><span class="meta-val">PROD-001</span></div>
+        <div class="meta-row"><span class="meta-label">등록일</span><span class="meta-val">2026.01.15</span></div>
+        <div class="meta-row"><span class="meta-label">총 예약</span><span class="meta-val">12건</span></div>
+        <div class="meta-row"><span class="meta-label">리뷰</span><span class="meta-val">4.7 ★ (8개)</span></div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-title">📢 게시 상태</div>
+        <select class="status-select">
+          <option selected>게시중 (공개)</option>
+          <option>임시저장 (비공개)</option>
+          <option>품절 (공개, 예약불가)</option>
+        </select>
+      </div>
+
+      <div class="side-card">
+        <div class="side-title" style="color:var(--err)">⚠️ 위험 구역</div>
+        <p style="font-size:12px;color:var(--g500);margin-bottom:8px;line-height:1.55">이 상품을 삭제하면 모든 관련 데이터가 영구적으로 사라집니다. 이 작업은 되돌릴 수 없습니다.</p>
+        <button class="danger-btn" onclick="location.href='16-admin-product-delete.html'">🗑 이 상품 삭제</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

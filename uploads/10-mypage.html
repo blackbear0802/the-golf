@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10 · 마이페이지</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--a:#c9a227;--as:#e4c46a;--s:#fff;--bg:#f8f6f1;--pa:#faf8f3;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+.screen-label{position:fixed;top:8px;right:8px;background:var(--a);color:var(--pd);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rp);z-index:999}
+header{background:var(--p);height:56px;display:flex;align-items:center;padding:0 16px}
+.header-title{font-size:16px;font-weight:600;color:#fff}
+
+/* 프로필 카드 */
+.profile-card{background:linear-gradient(135deg,var(--pd),var(--p));padding:24px 16px 20px;display:flex;align-items:center;gap:16px}
+.avatar{width:64px;height:64px;border-radius:50%;background:var(--a);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--pd);flex-shrink:0}
+.profile-info{flex:1}
+.profile-name{font-family:var(--fd);font-size:20px;color:#fff;font-weight:400;margin-bottom:4px}
+.profile-email{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px}
+.profile-tags{display:flex;gap:6px}
+.ptag{font-size:11px;font-weight:600;background:rgba(201,162,39,.2);color:var(--a);padding:3px 9px;border-radius:var(--rp)}
+.edit-btn{font-size:12px;color:rgba(255,255,255,.6);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:var(--rp);cursor:pointer}
+
+/* 통계 */
+.stats-row{background:var(--p);display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.1);padding:14px 0}
+.stat-item{text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:var(--fe);font-size:20px;font-weight:700;color:var(--a)}
+.stat-label{font-size:10px;color:rgba(255,255,255,.45);margin-top:3px}
+
+/* 섹션 */
+.section{background:var(--s);margin:12px 16px;border-radius:var(--rxl);overflow:hidden;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.section-header{padding:14px 16px;border-bottom:1px solid var(--g100);font-size:13px;font-weight:700;color:var(--g700);display:flex;align-items:center;gap:8px}
+.menu-item{display:flex;align-items:center;padding:15px 16px;border-bottom:1px solid var(--g100);cursor:pointer;gap:12px}
+.menu-item:last-child{border-bottom:none}
+.menu-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0}
+.menu-label{flex:1;font-size:14px;color:var(--g900)}
+.menu-value{font-size:13px;color:var(--g500)}
+.menu-arrow{font-size:16px;color:var(--g200)}
+.menu-badge{background:var(--err);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:var(--rp)}
+
+/* 핸디 카드 */
+.handi-card{margin:0 16px 12px;background:var(--s);border-radius:var(--rxl);padding:16px;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.handi-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.handi-title{font-size:14px;font-weight:700;color:var(--g900)}
+.handi-update{font-size:11px;color:var(--g500)}
+.handi-main{display:flex;align-items:baseline;gap:4px;margin-bottom:8px}
+.handi-num{font-family:var(--fe);font-size:40px;font-weight:700;color:var(--p)}
+.handi-unit{font-size:16px;color:var(--g500)}
+.handi-desc{font-size:12px;color:var(--g500)}
+.handi-bar{height:6px;background:var(--g100);border-radius:var(--rp);margin-top:10px;overflow:hidden}
+.handi-fill{height:100%;width:58%;background:linear-gradient(90deg,var(--p),var(--a));border-radius:var(--rp)}
+
+/* 로그아웃 */
+.logout-btn{margin:0 16px 80px;width:calc(100% - 32px);height:48px;background:var(--s);border:1.5px solid var(--g200);border-radius:var(--rxl);font-size:14px;font-weight:600;color:var(--g700);font-family:var(--fb);cursor:pointer}
+
+nav{background:var(--s);border-top:1px solid var(--g100);height:56px;display:flex;align-items:center;padding:0 8px;position:sticky;bottom:0}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.ni span:first-child{font-size:20px;line-height:1}
+.ni span:last-child{font-size:10px;color:var(--g500)}
+.ni.active span:last-child{color:var(--p);font-weight:600}
+</style></head><body>
+<div class="screen-label">10 · 마이페이지</div>
+<header><span class="header-title">나</span></header>
+
+<div class="profile-card">
+  <div class="avatar">김</div>
+  <div class="profile-info">
+    <div class="profile-name">김민준</div>
+    <div class="profile-email">minjun.kim@gmail.com</div>
+    <div class="profile-tags">
+      <span class="ptag">핸디 16.4</span>
+      <span class="ptag">23라운드</span>
+    </div>
+  </div>
+  <button class="edit-btn">프로필 수정</button>
+</div>
+
+<div class="stats-row">
+  <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">총 여행</div></div>
+  <div class="stat-item"><div class="stat-num">23</div><div class="stat-label">라운드</div></div>
+  <div class="stat-item"><div class="stat-num">87.4</div><div class="stat-label">평균 스코어</div></div>
+  <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">리뷰</div></div>
+</div>
+
+<!-- 핸디캡 카드 -->
+<div class="handi-card">
+  <div class="handi-header">
+    <span class="handi-title">⛳ 핸디캡 인덱스</span>
+    <span class="handi-update">2026.04.10 업데이트</span>
+  </div>
+  <div class="handi-main"><span class="handi-num">16.4</span><span class="handi-unit">HCP</span></div>
+  <div class="handi-desc">최근 20라운드 기준 · 최저 8 / 최고 22</div>
+  <div class="handi-bar"><div class="handi-fill"></div></div>
+</div>
+
+<!-- 예약 관련 -->
+<div class="section">
+  <div class="section-header">📋 예약 / 여행</div>
+  <div class="menu-item">
+    <span class="menu-icon">🗓</span>
+    <span class="menu-label">예약 내역</span>
+    <span class="menu-badge">2</span>
+    <span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-item">
+    <span class="menu-icon">⛳</span>
+    <span class="menu-label">스코어카드</span>
+    <span class="menu-value">23개</span>
+    <span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-item">
+    <span class="menu-icon">⭐</span>
+    <span class="menu-label">내 리뷰</span>
+    <span class="menu-value">3개</span>
+    <span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-item">
+    <span class="menu-icon">❤️</span>
+    <span class="menu-label">찜한 상품</span>
+    <span class="menu-value">7개</span>
+    <span class="menu-arrow">›</span>
+  </div>
+</div>
+
+<!-- 동행 매칭 -->
+<div class="section">
+  <div class="section-header">👥 동행 매칭</div>
+  <div class="menu-item">
+    <span class="menu-icon">👥</span>
+    <span class="menu-label">내 팀</span>
+    <span class="menu-value">1개 활성</span>
+    <span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-item">
+    <span class="menu-icon">📨</span>
+    <span class="menu-label">받은 참가 신청</span>
+    <span class="menu-badge">1</span>
+    <span class="menu-arrow">›</span>
+  </div>
+</div>
+
+<!-- 설정 -->
+<div class="section" style="margin-bottom:12px">
+  <div class="section-header">⚙️ 설정</div>
+  <div class="menu-item">
+    <span class="menu-icon">🔔</span>
+    <span class="menu-label">알림 설정</span>
+    <span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-item">
+    <span class="menu-icon">🔒</span>
+    <span class="menu-label">보안 / 비밀번호</span>
+    <span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-item">
+    <span class="menu-icon">📄</span>
+    <span class="menu-label">이용약관 / 개인정보처리방침</span>
+    <span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-item">
+    <span class="menu-icon">💬</span>
+    <span class="menu-label">고객센터</span>
+    <span class="menu-arrow">›</span>
+  </div>
+</div>
+
+<button class="logout-btn">로그아웃</button>
+
+<nav>
+  <div class="ni"><span>🏠</span><span>홈</span></div>
+  <div class="ni"><span>🔍</span><span>탐색</span></div>
+  <div class="ni"><span>📋</span><span>예약</span></div>
+  <div class="ni"><span>👥</span><span>매칭</span></div>
+  <div class="ni active"><span>👤</span><span style="color:var(--p);font-weight:600">나</span></div>
+</nav>
+</body></html>

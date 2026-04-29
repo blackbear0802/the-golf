@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>13 · 어드민 상품 목록</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--a:#c9a227;--s:#fff;--bg:#f0eeea;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex}
+
+.sidebar{width:220px;background:var(--pd);min-height:100dvh;flex-shrink:0;display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.logo-text{font-family:var(--fd);font-size:16px;color:var(--a);font-weight:700}
+.logo-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
+.nav-group{padding:16px 0}
+.nav-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);padding:0 16px 8px;text-transform:uppercase;letter-spacing:.1em}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;color:rgba(255,255,255,.6);cursor:pointer;border-left:3px solid transparent}
+.nav-item.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--a)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-badge{background:var(--err);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:var(--rp);margin-left:auto}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;background:var(--s);border-bottom:1px solid var(--g100);display:flex;align-items:center;padding:0 20px;gap:16px}
+.topbar-title{font-size:16px;font-weight:700;color:var(--g900);flex:1}
+.new-btn{background:var(--p);color:#fff;border:none;border-radius:var(--rmd);padding:8px 16px;font-size:13px;font-weight:700;font-family:var(--fb);cursor:pointer}
+
+.content{flex:1;padding:20px;overflow-y:auto}
+
+/* 필터 바 */
+.filter-bar{background:var(--s);border-radius:var(--rxl);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(22,48,40,.06)}
+.search-input{flex:1;border:1.5px solid var(--g200);border-radius:var(--rmd);padding:9px 14px;font-size:14px;font-family:var(--fb);background:var(--g50);outline:none;color:var(--g900)}
+.search-input:focus{border-color:var(--p)}
+select{border:1.5px solid var(--g200);border-radius:var(--rmd);padding:9px 14px;font-size:13px;font-family:var(--fb);background:var(--g50);color:var(--g700);outline:none;cursor:pointer}
+
+/* 통계 */
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.mini-stat{background:var(--s);border-radius:var(--rxl);padding:14px;box-shadow:0 1px 3px rgba(22,48,40,.06);text-align:center}
+.ms-num{font-family:var(--fe);font-size:24px;font-weight:700;color:var(--g900)}
+.ms-label{font-size:11px;color:var(--g500);margin-top:3px}
+
+/* 테이블 */
+.table-card{background:var(--s);border-radius:var(--rxl);box-shadow:0 1px 3px rgba(22,48,40,.06);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{background:var(--g50);padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--g700);white-space:nowrap;border-bottom:1px solid var(--g100)}
+td{padding:12px;font-size:13px;color:var(--g900);border-bottom:1px solid var(--g100);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--g50)}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.dot-pub{background:#16a34a}
+.dot-draft{background:var(--g200)}
+.dot-soldout{background:var(--err)}
+.product-thumb{width:44px;height:44px;border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.product-name{font-size:14px;font-weight:600;color:var(--g900)}
+.product-meta{font-size:11px;color:var(--g500);margin-top:2px}
+.price-val{font-family:var(--fe);font-size:13px;font-weight:700;color:var(--g900)}
+.action-row{display:flex;gap:6px}
+.act-btn{font-size:12px;font-weight:600;padding:5px 10px;border-radius:var(--rsm);border:1.5px solid var(--g200);background:var(--s);color:var(--g700);cursor:pointer}
+.act-btn.edit{background:var(--p);color:#fff;border-color:var(--p)}
+.act-btn.del{background:#fff1f2;color:#9f1239;border-color:#fecdd3}
+.tag-pill{font-size:10px;padding:2px 7px;border-radius:var(--rp);background:var(--g100);color:var(--g700);margin-right:4px}
+</style></head><body>
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">THE GOLF</div>
+    <div class="logo-sub">어드민 콘솔</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">운영</div>
+    <div class="nav-item"><span class="nav-icon">📋</span>예약 CRM<span class="nav-badge">7</span></div>
+    <div class="nav-item"><span class="nav-icon">👥</span>고객 관리</div>
+    <div class="nav-item"><span class="nav-icon">💬</span>문의 / 채팅</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">상품</div>
+    <div class="nav-item active"><span class="nav-icon">⛳</span>상품 관리</div>
+    <div class="nav-item"><span class="nav-icon">🏨</span>공급사 관리</div>
+    <div class="nav-item"><span class="nav-icon">⭐</span>리뷰 관리</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">분석</div>
+    <div class="nav-item"><span class="nav-icon">📊</span>매출 분석</div>
+    <div class="nav-item"><span class="nav-icon">🔧</span>시스템 설정</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">상품 관리</span>
+    <button class="new-btn" onclick="location.href='14-admin-product-create.html'">+ 새 상품 등록</button>
+  </div>
+
+  <div class="content">
+    <div class="filter-bar">
+      <input class="search-input" placeholder="상품명, 목적지 검색..." value="">
+      <select><option>전체 국가</option><option>태국</option><option>베트남</option><option>필리핀</option><option>인도네시아</option></select>
+      <select><option>전체 상태</option><option>게시중</option><option>임시저장</option><option>품절</option></select>
+    </div>
+
+    <div class="mini-stats">
+      <div class="mini-stat"><div class="ms-num">8</div><div class="ms-label">전체 상품</div></div>
+      <div class="mini-stat"><div class="ms-num" style="color:#16a34a">6</div><div class="ms-label">게시중</div></div>
+      <div class="mini-stat"><div class="ms-num" style="color:var(--g500)">1</div><div class="ms-label">임시저장</div></div>
+      <div class="mini-stat"><div class="ms-num" style="color:var(--err)">1</div><div class="ms-label">품절</div></div>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>상품</th>
+            <th>국가</th>
+            <th>일정</th>
+            <th>라운드</th>
+            <th>포함사항</th>
+            <th>기본가 (1인)</th>
+            <th>상태</th>
+            <th>예약수</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="product-thumb" style="background:linear-gradient(135deg,#1a6b3a,#163028)">⛳</div>
+                <div>
+                  <div class="product-name">치앙마이 3박 4일 3라운드</div>
+                  <div class="product-meta">하이랜드 골프 & 스파 · 4인 기준</div>
+                </div>
+              </div>
+            </td>
+            <td>🇹🇭 태국</td>
+            <td>3박 4일</td>
+            <td>3R</td>
+            <td><span class="tag-pill">항공</span><span class="tag-pill">숙박</span><span class="tag-pill">캐디</span></td>
+            <td><span class="price-val">890,000원</span></td>
+            <td><span><span class="status-dot dot-pub"></span>게시중</span></td>
+            <td style="font-family:var(--fe);font-weight:700">12</td>
+            <td>
+              <div class="action-row">
+                <button class="act-btn edit" onclick="location.href='15-admin-product-edit.html'">수정</button>
+                <button class="act-btn del" onclick="location.href='16-admin-product-delete.html'">삭제</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="product-thumb" style="background:linear-gradient(135deg,#1a4d6e,#0d2a40)">⛳</div>
+                <div>
+                  <div class="product-name">다낭 4박 5일 3라운드</div>
+                  <div class="product-meta">바나힐스 골프 · 2인 기준</div>
+                </div>
+              </div>
+            </td>
+            <td>🇻🇳 베트남</td>
+            <td>4박 5일</td>
+            <td>3R</td>
+            <td><span class="tag-pill">항공</span><span class="tag-pill">숙박</span><span class="tag-pill">캐디</span></td>
+            <td><span class="price-val">1,150,000원</span></td>
+            <td><span><span class="status-dot dot-pub"></span>게시중</span></td>
+            <td style="font-family:var(--fe);font-weight:700">8</td>
+            <td>
+              <div class="action-row">
+                <button class="act-btn edit">수정</button>
+                <button class="act-btn del">삭제</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="product-thumb" style="background:linear-gradient(135deg,#2a3a6e,#151e40)">⛳</div>
+                <div>
+                  <div class="product-name">클라크 3박 4일 2라운드</div>
+                  <div class="product-meta">미모사 CC · 4인 기준</div>
+                </div>
+              </div>
+            </td>
+            <td>🇵🇭 필리핀</td>
+            <td>3박 4일</td>
+            <td>2R</td>
+            <td><span class="tag-pill">항공</span><span class="tag-pill">숙박</span><span class="tag-pill">캐디</span></td>
+            <td><span class="price-val">720,000원</span></td>
+            <td><span><span class="status-dot dot-pub"></span>게시중</span></td>
+            <td style="font-family:var(--fe);font-weight:700">15</td>
+            <td>
+              <div class="action-row">
+                <button class="act-btn edit">수정</button>
+                <button class="act-btn del">삭제</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="product-thumb" style="background:linear-gradient(135deg,#3a2a1e,#201510)">⛳</div>
+                <div>
+                  <div class="product-name">발리 5박 6일 4라운드 (준비중)</div>
+                  <div class="product-meta">니르와나 발리 · 4인 기준</div>
+                </div>
+              </div>
+            </td>
+            <td>🇮🇩 인도네시아</td>
+            <td>5박 6일</td>
+            <td>4R</td>
+            <td><span class="tag-pill">항공</span><span class="tag-pill">숙박</span><span class="tag-pill">캐디</span></td>
+            <td><span class="price-val">1,490,000원</span></td>
+            <td><span><span class="status-dot dot-draft"></span>임시저장</span></td>
+            <td style="font-family:var(--fe);font-weight:700">0</td>
+            <td>
+              <div class="action-row">
+                <button class="act-btn edit">수정</button>
+                <button class="act-btn del">삭제</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>09 · 스코어카드</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+:root{--p:#163028;--pd:#0d1f19;--a:#c9a227;--as:#e4c46a;--s:#fff;--bg:#f8f6f1;--pa:#faf8f3;--g50:#f6f5f1;--g100:#eae8e0;--g200:#d9d6cc;--g500:#6b7280;--g700:#3f4a44;--g900:#111613;--err:#dc2626;--fd:'Noto Serif KR',serif;--fb:'Pretendard','Apple SD Gothic Neo',sans-serif;--fe:'Inter',sans-serif;--rsm:4px;--rmd:8px;--rlg:12px;--rxl:16px;--rp:9999px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);min-height:100dvh;display:flex;flex-direction:column}
+.screen-label{position:fixed;top:8px;right:8px;background:var(--a);color:var(--pd);font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rp);z-index:999}
+header{background:var(--p);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100}
+.header-title{font-size:16px;font-weight:600;color:#fff}
+.header-btn{font-size:13px;font-weight:600;color:var(--a);background:none;border:none;cursor:pointer;padding:6px}
+
+/* 코스 정보 */
+.course-info{background:var(--p);padding:12px 16px 14px;text-align:center}
+.course-name{font-family:var(--fd);font-size:16px;color:#fff;font-weight:400;margin-bottom:2px}
+.course-meta{font-size:12px;color:rgba(255,255,255,.5)}
+
+/* 총점 요약 */
+.score-summary{background:linear-gradient(135deg,var(--pd),var(--p));padding:16px;display:flex;justify-content:center;gap:32px}
+.score-item{text-align:center}
+.score-num{font-family:var(--fe);font-size:32px;font-weight:700;color:#fff;line-height:1}
+.score-label{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px}
+.score-diff{color:var(--a)}
+.score-divider{width:1px;background:rgba(255,255,255,.15);align-self:stretch}
+
+/* 홀별 입력 */
+.hole-section{background:var(--s);margin:12px 16px;border-radius:var(--rxl);overflow:hidden;box-shadow:0 1px 2px rgba(22,48,40,.06)}
+.hole-section-header{padding:10px 14px;background:var(--g50);border-bottom:1px solid var(--g100);font-size:12px;font-weight:600;color:var(--g700);display:flex;justify-content:space-between}
+
+/* 홀 그리드 */
+.hole-grid{display:grid;grid-template-columns:repeat(9,1fr);border-bottom:1px solid var(--g100)}
+.hole-cell{padding:6px 0;text-align:center;border-right:1px solid var(--g100);font-size:11px}
+.hole-cell:last-child{border-right:none}
+.hole-header{background:var(--g50);font-weight:600;color:var(--g700);font-size:10px;padding:5px 0}
+.par-row{background:var(--g50);color:var(--g700);font-size:11px;border-bottom:1px solid var(--g100)}
+.score-input{width:100%;text-align:center;border:none;outline:none;font-size:14px;font-weight:700;font-family:var(--fe);background:none;color:var(--g900);height:36px;-webkit-appearance:none}
+.birdie{color:#2563eb}
+.par-score{color:var(--g700)}
+.bogey{color:var(--err)}
+.double{color:#9f1239;font-weight:900}
+
+/* 합계 행 */
+.total-row{display:grid;grid-template-columns:repeat(10,1fr);border-top:2px solid var(--g200)}
+.total-cell{padding:8px 0;text-align:center;font-size:12px;font-weight:700;border-right:1px solid var(--g100)}
+.total-cell:last-child{border-right:none}
+.total-label{background:var(--p);color:#fff}
+.total-par{background:var(--g50);color:var(--g700)}
+.total-score{background:var(--a);color:var(--pd);font-size:14px}
+
+/* 하단 액션 */
+.bottom-actions{padding:16px;display:flex;gap:10px;position:sticky;bottom:0;background:var(--s);border-top:1px solid var(--g100)}
+.btn-save{flex:1;height:48px;background:var(--p);color:#fff;border:none;border-radius:var(--rxl);font-size:15px;font-weight:700;font-family:var(--fb);cursor:pointer}
+.btn-share{height:48px;padding:0 20px;background:var(--s);border:1.5px solid var(--g200);border-radius:var(--rxl);font-size:14px;font-weight:600;color:var(--g700);font-family:var(--fb);cursor:pointer;display:flex;align-items:center;gap:6px}
+</style></head><body>
+<div class="screen-label">09 · 스코어카드</div>
+<header>
+  <span style="color:rgba(255,255,255,.7);font-size:22px;cursor:pointer">←</span>
+  <span class="header-title">스코어카드</span>
+  <button class="header-btn">저장</button>
+</header>
+
+<div class="course-info">
+  <div class="course-name">하이랜드 골프 & 스파 리조트</div>
+  <div class="course-meta">🇹🇭 치앙마이 · 2026년 5월 15일</div>
+</div>
+
+<div class="score-summary">
+  <div class="score-item"><div class="score-num">89</div><div class="score-label">총 타수</div></div>
+  <div class="score-divider"></div>
+  <div class="score-item"><div class="score-num">+17</div><div class="score-label">오버파</div></div>
+  <div class="score-divider"></div>
+  <div class="score-item"><div class="score-num score-diff">16.8</div><div class="score-label">핸디캡 차</div></div>
+</div>
+
+<!-- 전반 9홀 -->
+<div class="hole-section">
+  <div class="hole-section-header"><span>전반 (1-9홀)</span><span style="color:var(--g500)">OUT</span></div>
+  <div class="hole-grid">
+    <div class="hole-cell hole-header">홀</div>
+    <div class="hole-cell hole-header">1</div>
+    <div class="hole-cell hole-header">2</div>
+    <div class="hole-cell hole-header">3</div>
+    <div class="hole-cell hole-header">4</div>
+    <div class="hole-cell hole-header">5</div>
+    <div class="hole-cell hole-header">6</div>
+    <div class="hole-cell hole-header">7</div>
+    <div class="hole-cell hole-header">8</div>
+  </div>
+  <div class="hole-grid par-row">
+    <div class="hole-cell hole-header">파</div>
+    <div class="hole-cell">4</div><div class="hole-cell">3</div><div class="hole-cell">5</div>
+    <div class="hole-cell">4</div><div class="hole-cell">4</div><div class="hole-cell">3</div>
+    <div class="hole-cell">5</div><div class="hole-cell">4</div>
+  </div>
+  <div class="hole-grid">
+    <div class="hole-cell hole-header" style="background:var(--g50);color:var(--g700);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">타수</div>
+    <div class="hole-cell"><input class="score-input par-score" type="number" value="4"></div>
+    <div class="hole-cell"><input class="score-input birdie" type="number" value="2"></div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="6"></div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="5"></div>
+    <div class="hole-cell"><input class="score-input par-score" type="number" value="4"></div>
+    <div class="hole-cell"><input class="score-input par-score" type="number" value="3"></div>
+    <div class="hole-cell"><input class="score-input double" type="number" value="7"></div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="5"></div>
+  </div>
+  <div class="total-row">
+    <div class="total-cell total-label">OUT</div>
+    <div class="total-cell" style="grid-column:span 7"></div>
+    <div class="total-cell total-par">36</div>
+    <div class="total-cell total-score">36</div>
+  </div>
+</div>
+
+<!-- 후반 9홀 (축약) -->
+<div class="hole-section" style="margin-bottom:80px">
+  <div class="hole-section-header"><span>후반 (10-18홀)</span><span style="color:var(--g500)">IN</span></div>
+  <div class="hole-grid">
+    <div class="hole-cell hole-header">홀</div>
+    <div class="hole-cell hole-header">10</div><div class="hole-cell hole-header">11</div>
+    <div class="hole-cell hole-header">12</div><div class="hole-cell hole-header">13</div>
+    <div class="hole-cell hole-header">14</div><div class="hole-cell hole-header">15</div>
+    <div class="hole-cell hole-header">16</div><div class="hole-cell hole-header">17</div>
+  </div>
+  <div class="hole-grid par-row">
+    <div class="hole-cell hole-header">파</div>
+    <div class="hole-cell">4</div><div class="hole-cell">5</div><div class="hole-cell">3</div>
+    <div class="hole-cell">4</div><div class="hole-cell">4</div><div class="hole-cell">5</div>
+    <div class="hole-cell">3</div><div class="hole-cell">4</div>
+  </div>
+  <div class="hole-grid">
+    <div class="hole-cell hole-header" style="background:var(--g50);color:var(--g700);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">타수</div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="5"></div>
+    <div class="hole-cell"><input class="score-input par-score" type="number" value="5"></div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="4"></div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="5"></div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="5"></div>
+    <div class="hole-cell"><input class="score-input par-score" type="number" value="5"></div>
+    <div class="hole-cell"><input class="score-input bogey" type="number" value="4"></div>
+    <div class="hole-cell"><input class="score-input double" type="number" value="6"></div>
+  </div>
+  <div class="total-row">
+    <div class="total-cell total-label">IN</div>
+    <div class="total-cell" style="grid-column:span 7"></div>
+    <div class="total-cell total-par">36</div>
+    <div class="total-cell total-score">39</div>
+  </div>
+  <div class="total-row" style="background:var(--pd)">
+    <div class="total-cell" style="background:var(--a);color:var(--pd);font-size:12px">TOTAL</div>
+    <div class="total-cell" style="background:var(--pd);color:#fff;grid-column:span 7"></div>
+    <div class="total-cell" style="background:var(--pd);color:rgba(255,255,255,.6)">72</div>
+    <div class="total-cell" style="background:var(--a);color:var(--pd);font-size:15px">75</div>
+  </div>
+</div>
+
+<div class="bottom-actions">
+  <button class="btn-save">저장하기</button>
+  <button class="btn-share">⬆ SNS 공유</button>
+</div>
+</body></html>
