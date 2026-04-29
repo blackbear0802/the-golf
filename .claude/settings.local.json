@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip -l golf-frontend.zip)",
+      "Bash(unzip -l golf-crawler.zip)",
+      "Skill(anthropic-skills:office-hours)",
+      "Skill(anthropic-skills:office-hours:*)",
+      "Bash(~/.claude/skills/gstack/bin/gstack-config set *)",
+      "Bash(~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"plan-ceo-review\",\"event\":\"completed\",\"branch\":\"unknown\",\"outcome\":\"success\",\"session\":\"CEO-review-yj-golf\"}')",
+      "Bash(~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"plan-eng-review\",\"event\":\"completed\",\"branch\":\"unknown\",\"outcome\":\"success\",\"session\":\"ENG-review-yj-golf\"}')",
+      "Bash(~/.claude/skills/gstack/browse/bin/remote-slug)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(~/.claude/skills/gstack/bin/gstack-slug)",
+      "Bash(git -C \"/e/PJT/YJ Golf Travel/WORKSPACE\" remote get-url origin)",
+      "Bash(python3 -c ' *)",
+      "Bash(node -e ' *)",
+      "Read(//usr/**)",
+      "Bash(ls /c/Python*)",
+      "Bash(python -c ' *)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git --version)",
+      "Bash(bun --version)",
+      "Bash(git clone *)",
+      "Read(//c/Users/박준석/.claude/skills/gstack/**)",
+      "Bash(./setup)",
+      "mcp__notebooklm-mcp__notebook_get",
+      "mcp__notebooklm-mcp__source_get_content",
+      "Skill(gstack-plan-ceo-review)",
+      "Skill(gstack-plan-eng-review)",
+      "Skill(gstack-plan-design-review)"
+    ]
+  }
+}

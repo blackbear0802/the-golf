@@ -1,0 +1,356 @@
+// 더 골프 여행 플랫폼 — Prisma Schema
+// Last updated: 2026-04-28 (Eng Review 반영)
+// Ref: E:\PJT\The Golf\schema-spec.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────
+// 사용자
+// ─────────────────────────────────────────────────
+
+model User {
+  userId        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("user_id")
+  email         String?   @unique @db.VarChar(255)
+  name          String    @db.VarChar(100)
+  phone         String?   @db.VarChar(20)
+  oauthId       String?   @map("oauth_id") @db.VarChar(255)
+  // 'customer' | 'staff' | 'admin'  — CHECK constraint in migration SQL
+  role          String    @default("customer") @db.VarChar(20)
+  handicapIndex Decimal?  @map("handicap_index") @db.Decimal(4, 1)
+  avgScore      Int?      @map("avg_score")
+  deletedAt     DateTime? @map("deleted_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  oauthTokens          UserOAuthToken[]
+  bookings             Booking[]             @relation("UserBookings")
+  assignedBookings     Booking[]             @relation("StaffBookings")
+  reviews              Review[]
+  scorecards           ScoreCard[]
+  matchRequests        MatchRequest[]
+  createdBookingGroups BookingGroup[]
+  priceHistoryChanges  PriceHistory[]
+
+  @@map("users")
+}
+
+model UserOAuthToken {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  // 'kakao' | 'naver' | 'google' | 'apple'
+  provider     String    @db.VarChar(50)
+  accessToken  String    @map("access_token")   // 암호화 저장
+  refreshToken String?   @map("refresh_token")  // 암호화 저장
+  expiresAt    DateTime? @map("expires_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@map("user_oauth_tokens")
+}
+
+// ─────────────────────────────────────────────────
+// 공급자 / 목적지 / 골프장
+// ─────────────────────────────────────────────────
+
+model Supplier {
+  supplierId   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("supplier_id")
+  name         String    @db.VarChar(255)
+  // 'internal' | 'agent' | 'direct'
+  type         String    @db.VarChar(50)
+  contactEmail String?   @map("contact_email") @db.VarChar(255)
+  contactPhone String?   @map("contact_phone") @db.VarChar(20)
+  status       String    @default("active") @db.VarChar(50)
+  deletedAt    DateTime? @map("deleted_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  products Product[]
+
+  @@map("suppliers")
+}
+
+model Destination {
+  destinationId String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("destination_id")
+  code          String  @unique @db.VarChar(50)   // 'thailand'
+  nameKo        String  @map("name_ko") @db.VarChar(100)  // '태국'
+  nameEn        String? @map("name_en") @db.VarChar(100)  // 'Thailand'
+  country       String? @db.VarChar(100)
+  region        String? @db.VarChar(100)          // 'southeast_asia'
+
+  products Product[]
+
+  @@map("destinations")
+}
+
+model Venue {
+  courseId     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("course_id")
+  name         String    @db.VarChar(255)
+  nameEn       String?   @map("name_en") @db.VarChar(255)
+  country      String?   @db.VarChar(100)
+  region       String?   @db.VarChar(100)
+  holes        Int       @default(18)
+  par          Int?
+  yardage      Int?
+  courseRating Decimal?  @map("course_rating") @db.Decimal(4, 1)
+  slopeRating  Int?      @map("slope_rating")
+  description  String?
+  latitude     Decimal?  @db.Decimal(10, 7)
+  longitude    Decimal?  @db.Decimal(10, 7)
+  deletedAt    DateTime? @map("deleted_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  products   Product[]
+  reviews    Review[]
+  scorecards ScoreCard[]
+
+  @@index([country, region])
+  @@map("venues")
+}
+
+// ─────────────────────────────────────────────────
+// 상품
+// ─────────────────────────────────────────────────
+
+model Product {
+  productId       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("product_id")
+  supplierId      String?   @map("supplier_id") @db.Uuid  // Phase 1: nullable, Phase 2: NOT NULL
+  courseId        String?   @map("course_id") @db.Uuid
+  destinationId   String?   @map("destination_id") @db.Uuid
+  title           String    @db.VarChar(500)
+  description     String?
+  price           Decimal?  @db.Decimal(12, 2)
+  currency        String    @default("KRW") @db.VarChar(10)
+  // 필터링용 boolean 컬럼 — inclusions_extra JSONB보다 인덱스 성능 우수
+  includesFlight  Boolean   @default(false) @map("includes_flight")
+  includesHotel   Boolean   @default(false) @map("includes_hotel")
+  includesCaddie  Boolean   @default(false) @map("includes_caddie")
+  inclusionsExtra Json?     @map("inclusions_extra")  // 기타 부가서비스
+  nights          Int?
+  rounds          Int?
+  departureCity   String?   @map("departure_city") @db.VarChar(100)
+  // 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'  — CHECK constraint in migration
+  status          String    @default("DRAFT") @db.VarChar(50)
+  sourceUrl       String?   @map("source_url")  // 밴드 원본 URL
+  publishedAt     DateTime? @map("published_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  supplier             Supplier?            @relation(fields: [supplierId], references: [supplierId])
+  venue                Venue?               @relation(fields: [courseId], references: [courseId])
+  destination          Destination?         @relation(fields: [destinationId], references: [destinationId])
+  bookings             Booking[]
+  priceHistory         PriceHistory[]
+  cancellationPolicies CancellationPolicy[]
+  bookingGroups        BookingGroup[]
+  reviews              Review[]
+
+  @@index([destinationId, status])
+  @@index([supplierId])
+  @@index([status, publishedAt(sort: Desc)])
+  @@map("products")
+}
+
+model PriceHistory {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  oldPrice  Decimal? @map("old_price") @db.Decimal(12, 2)
+  newPrice  Decimal? @map("new_price") @db.Decimal(12, 2)
+  changedBy String?  @map("changed_by") @db.Uuid
+  changedAt DateTime @default(now()) @map("changed_at")
+
+  product Product @relation(fields: [productId], references: [productId])
+  user    User?   @relation(fields: [changedBy], references: [userId])
+
+  @@map("price_history")
+}
+
+model CancellationPolicy {
+  policyId    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("policy_id")
+  productId   String   @map("product_id") @db.Uuid
+  daysBefore  Int      @map("days_before")   // 출발 며칠 전까지
+  penaltyPct  Int      @map("penalty_pct")   // 0-100 (0=무료취소)
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [productId])
+
+  @@map("cancellation_policies")
+}
+
+// ─────────────────────────────────────────────────
+// 예약
+// ─────────────────────────────────────────────────
+
+model Booking {
+  bookingId       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("booking_id")
+  userId          String    @map("user_id") @db.Uuid
+  productId       String    @map("product_id") @db.Uuid
+  groupId         String?   @map("group_id") @db.Uuid
+  // 'REQUESTED' | 'ASSIGNED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
+  status          String    @default("REQUESTED") @db.VarChar(50)
+  travelerCount   Int       @default(1) @map("traveler_count")
+  specialRequests String?   @map("special_requests")
+  assignedStaffId String?   @map("assigned_staff_id") @db.Uuid  // role='staff' 만 가능
+  assignedAt      DateTime? @map("assigned_at")
+  confirmedAt     DateTime? @map("confirmed_at")
+  checkInDate     DateTime  @map("check_in_date") @db.Date
+  checkOutDate    DateTime  @map("check_out_date") @db.Date
+  // 더블클릭 방지 — 클라이언트가 UUID 생성하여 전송
+  idempotencyKey  String?   @unique @map("idempotency_key") @db.VarChar(255)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  user          User                       @relation("UserBookings", fields: [userId], references: [userId])
+  product       Product                    @relation(fields: [productId], references: [productId])
+  staff         User?                      @relation("StaffBookings", fields: [assignedStaffId], references: [userId])
+  group         BookingGroup?              @relation(fields: [groupId], references: [groupId])
+  review        Review?
+  notifications PreDepartureNotification[]
+  scorecards    ScoreCard[]
+
+  @@index([userId, status])
+  @@index([assignedStaffId, status])
+  @@map("bookings")
+}
+
+// ─────────────────────────────────────────────────
+// 동행 매칭
+// ─────────────────────────────────────────────────
+
+model BookingGroup {
+  groupId        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("group_id")
+  productId      String?  @map("product_id") @db.Uuid
+  travelDate     DateTime @map("travel_date") @db.Date
+  maxMembers     Int      @default(4) @map("max_members")
+  // 앱 레이어가 관리: currentMembers >= maxMembers 이면 OPEN→FULL
+  currentMembers Int      @default(0) @map("current_members")
+  // 'OPEN' | 'FULL' | 'CLOSED'
+  status         String   @default("OPEN") @db.VarChar(50)
+  createdBy      String?  @map("created_by") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  product       Product?       @relation(fields: [productId], references: [productId])
+  creator       User?          @relation(fields: [createdBy], references: [userId])
+  bookings      Booking[]
+  matchRequests MatchRequest[]
+
+  @@map("booking_groups")
+}
+
+model MatchRequest {
+  requestId   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("request_id")
+  groupId     String    @map("group_id") @db.Uuid
+  requesterId String    @map("requester_id") @db.Uuid
+  // 'PENDING' | 'ACCEPTED' | 'REJECTED'
+  status      String    @default("PENDING") @db.VarChar(50)
+  message     String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  respondedAt DateTime? @map("responded_at")
+
+  group     BookingGroup @relation(fields: [groupId], references: [groupId])
+  requester User         @relation(fields: [requesterId], references: [userId])
+
+  @@map("match_requests")
+}
+
+// ─────────────────────────────────────────────────
+// 리뷰
+// ─────────────────────────────────────────────────
+
+model Review {
+  reviewId   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("review_id")
+  bookingId  String   @unique @map("booking_id") @db.Uuid  // 예약 1건 = 리뷰 최대 1개
+  userId     String   @map("user_id") @db.Uuid
+  productId  String   @map("product_id") @db.Uuid
+  courseId   String?  @map("course_id") @db.Uuid
+  rating     Int      // 1-5, CHECK constraint in migration
+  title      String?  @db.VarChar(255)
+  body       String?
+  photos     String[] // Object Storage URL 배열
+  // 기본 FALSE — booking.status = COMPLETED 시 앱이 TRUE로 업데이트
+  isVerified Boolean  @default(false) @map("is_verified")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  booking Booking  @relation(fields: [bookingId], references: [bookingId])
+  user    User     @relation(fields: [userId], references: [userId])
+  product Product  @relation(fields: [productId], references: [productId])
+  venue   Venue?   @relation(fields: [courseId], references: [courseId])
+
+  @@index([productId, rating(sort: Desc)])
+  @@map("reviews")
+}
+
+// ─────────────────────────────────────────────────
+// 스코어카드
+// ─────────────────────────────────────────────────
+
+model ScoreCard {
+  scorecardId          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("scorecard_id")
+  userId               String   @map("user_id") @db.Uuid
+  bookingId            String?  @map("booking_id") @db.Uuid  // NULL 허용 (자유 기록)
+  courseId             String?  @map("course_id") @db.Uuid
+  playDate             DateTime @map("play_date") @db.Date
+  totalScore           Int?     @map("total_score")
+  handicapDifferential Decimal? @map("handicap_differential") @db.Decimal(4, 1)
+  // [{"hole":1,"par":4,"score":5}, ...]
+  holes                Json?
+  weather              String?  @db.VarChar(100)
+  // SNS 공유용 퍼블릭 토큰 — 서버에서 UUID 생성, 클라이언트 제공 금지
+  shareToken           String?  @unique @map("share_token") @db.VarChar(255)
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  user    User     @relation(fields: [userId], references: [userId])
+  booking Booking? @relation(fields: [bookingId], references: [bookingId])
+  venue   Venue?   @relation(fields: [courseId], references: [courseId])
+
+  @@index([userId, playDate(sort: Desc)])
+  @@map("scorecards")
+}
+
+// ─────────────────────────────────────────────────
+// 출발 전 브리핑 알림
+// ─────────────────────────────────────────────────
+
+model PreDepartureNotification {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookingId   String    @map("booking_id") @db.Uuid
+  // 'D-7' | 'D-1'
+  type        String    @db.VarChar(50)
+  // 'PENDING' | 'SENT' | 'FAILED'
+  status      String    @default("PENDING") @db.VarChar(50)
+  scheduledAt DateTime  @map("scheduled_at")
+  sentAt      DateTime? @map("sent_at")
+  retryCount  Int       @default(0) @map("retry_count")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  booking Booking @relation(fields: [bookingId], references: [bookingId])
+
+  @@map("pre_departure_notifications")
+}
+
+// ─────────────────────────────────────────────────
+// AI 이벤트 로그 (추천 개선용)
+// ─────────────────────────────────────────────────
+
+model ExperienceEvent {
+  eventId   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("event_id")
+  userId    String?  @map("user_id") @db.Uuid
+  sessionId String?  @map("session_id") @db.VarChar(255)
+  // 'search' | 'click' | 'booking' | 'ai_chat'
+  eventType String   @map("event_type") @db.VarChar(100)
+  payload   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([eventType, createdAt(sort: Desc)])
+  @@map("experience_events")
+}
