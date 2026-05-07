@@ -21,6 +21,7 @@ model User {
   name          String    @db.VarChar(100)
   phone         String?   @db.VarChar(20)
   oauthId       String?   @map("oauth_id") @db.VarChar(255)
+  passwordHash  String?   @map("password_hash")
   // 'customer' | 'staff' | 'admin'  — CHECK constraint in migration SQL
   role          String    @default("customer") @db.VarChar(20)
   handicapIndex Decimal?  @map("handicap_index") @db.Decimal(4, 1)

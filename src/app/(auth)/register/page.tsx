@@ -1,16 +1,19 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-function LoginForm() {
+export default function RegisterPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/'
-
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+  })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -21,31 +24,55 @@ function LoginForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.email || !form.password) {
-      setError('이메일과 비밀번호를 입력해주세요.')
+    if (!form.name || !form.email || !form.password) {
+      setError('이름, 이메일, 비밀번호는 필수 항목입니다.')
       return
     }
+    if (form.password.length < 8) {
+      setError('비밀번호는 8자 이상이어야 합니다.')
+      return
+    }
+    if (form.password !== form.confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다.')
+      return
+    }
+
     setError('')
     setLoading(true)
 
-    const result = await signIn('credentials', {
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        phone: form.phone || undefined,
+        password: form.password,
+      }),
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      setError(data.error ?? '회원가입 중 오류가 발생했습니다.')
+      setLoading(false)
+      return
+    }
+
+    // 가입 완료 후 자동 로그인
+    await signIn('credentials', {
       email: form.email,
       password: form.password,
       redirect: false,
     })
 
-    setLoading(false)
-
-    if (result?.error) {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.')
-    } else {
-      router.push(callbackUrl)
-      router.refresh()
-    }
+    router.push('/')
+    router.refresh()
   }
 
   const inputClass =
     'w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder-gray-400'
+  const labelClass = 'block text-sm font-medium text-gray-700 mb-1.5'
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: '#0d1f19' }}>
@@ -58,12 +85,23 @@ function LoginForm() {
         </div>
 
         <div className="bg-white rounded-[20px] p-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-1.5">로그인</h2>
-          <p className="text-sm text-gray-500 mb-6">이메일로 시작하세요</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-1.5">회원가입</h2>
+          <p className="text-sm text-gray-500 mb-6">더 골프 계정을 만드세요</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">이메일</label>
+              <label className={labelClass}>이름 *</label>
+              <input
+                type="text"
+                className={inputClass}
+                placeholder="홍길동"
+                value={form.name}
+                onChange={set('name')}
+                autoComplete="name"
+              />
+            </div>
+            <div>
+              <label className={labelClass}>이메일 *</label>
               <input
                 type="email"
                 className={inputClass}
@@ -74,14 +112,37 @@ function LoginForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">비밀번호</label>
+              <label className={labelClass}>연락처</label>
+              <input
+                type="tel"
+                className={inputClass}
+                placeholder="010-0000-0000"
+                value={form.phone}
+                onChange={set('phone')}
+                autoComplete="tel"
+              />
+              <p className="text-xs text-gray-400 mt-1">예약 확인 연락에 사용됩니다.</p>
+            </div>
+            <div>
+              <label className={labelClass}>비밀번호 *</label>
               <input
                 type="password"
                 className={inputClass}
-                placeholder="비밀번호를 입력하세요"
+                placeholder="8자 이상"
                 value={form.password}
                 onChange={set('password')}
-                autoComplete="current-password"
+                autoComplete="new-password"
+              />
+            </div>
+            <div>
+              <label className={labelClass}>비밀번호 확인 *</label>
+              <input
+                type="password"
+                className={inputClass}
+                placeholder="비밀번호를 다시 입력하세요"
+                value={form.confirmPassword}
+                onChange={set('confirmPassword')}
+                autoComplete="new-password"
               />
             </div>
 
@@ -96,25 +157,25 @@ function LoginForm() {
               disabled={loading}
               className="w-full bg-primary hover:bg-primary-hover disabled:opacity-60 text-white font-semibold py-3.5 rounded-xl transition-colors mt-1"
             >
-              {loading ? '로그인 중...' : '로그인'}
+              {loading ? '가입 중...' : '회원가입'}
             </button>
           </form>
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-gray-100" />
-            <span className="text-xs text-gray-400">계정이 없으신가요?</span>
+            <span className="text-xs text-gray-400">이미 계정이 있으신가요?</span>
             <div className="flex-1 h-px bg-gray-100" />
           </div>
 
           <Link
-            href="/register"
+            href="/login"
             className="block w-full text-center border border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:bg-gray-50 transition-colors text-sm"
           >
-            회원가입
+            로그인
           </Link>
 
           <p className="text-center text-xs text-gray-400 mt-5 leading-relaxed">
-            로그인 시{' '}
+            가입 시{' '}
             <Link href="/" className="text-primary underline">이용약관</Link>
             {' '}및{' '}
             <Link href="/" className="text-primary underline">개인정보처리방침</Link>
@@ -129,13 +190,5 @@ function LoginForm() {
         </div>
       </div>
     </div>
-  )
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense>
-      <LoginForm />
-    </Suspense>
   )
 }

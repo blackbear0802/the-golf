@@ -281,6 +281,17 @@ async function main() {
   console.log(`✅ Venues: ${venueData.length}개`)
 
   // ── 4. 상품 (Products) ────────────────────────────────────────────────────
+
+  // UI 디스플레이용 고정 UUID (src/lib/mock-data.ts의 id와 1:1 매핑)
+  const UI_IDS = {
+    chiangmai: '10000000-0000-4000-8000-000000000001',
+    danang:    '10000000-0000-4000-8000-000000000002',
+    clark:     '10000000-0000-4000-8000-000000000003',
+    bangkok:   '10000000-0000-4000-8000-000000000004',
+    hoian:     '10000000-0000-4000-8000-000000000005',
+    kotakina:  '10000000-0000-4000-8000-000000000006',
+  }
+
   const productData = [
     {
       productId:     IDS.product.chiangmai_3n4d_3r,
@@ -429,9 +440,97 @@ async function main() {
   }
   console.log(`✅ Products: ${productData.length}개`)
 
+  // ── 4-B. UI 디스플레이 상품 (mock-data.ts와 1:1 매핑) ────────────────────
+  const uiProductData = [
+    {
+      productId: UI_IDS.chiangmai,
+      supplierId: IDS.supplier.internal,
+      courseId:   IDS.venue.alpine_chiang_mai,
+      destinationId: dest.thailand,
+      title: '치앙마이 3박 4일 3라운드 골프 패키지',
+      description: '치앙마이 최고의 코스에서 3라운드를 경험하세요. 알파인 골프 리조트와 가산 레거시 등 현지 TOP 코스만 엄선했습니다.',
+      price: 890000,
+      includesFlight: false, includesHotel: true, includesCaddie: true,
+      nights: 3, rounds: 3, departureCity: '인천',
+      status: 'PUBLISHED', publishedAt: new Date('2026-04-01'),
+    },
+    {
+      productId: UI_IDS.danang,
+      supplierId: IDS.supplier.internal,
+      courseId:   IDS.venue.ba_na_hills,
+      destinationId: dest.vietnam,
+      title: '다낭 4박 5일 프리미엄 골프 패키지',
+      description: '다낭 해변가 럭셔리 호텔에서 3개 세계적 코스를 경험하세요. 바나힐스 CC, 몽고 CC, 다낭 GC 등 국제 대회 개최지 코스가 포함됩니다.',
+      price: 1150000,
+      includesFlight: false, includesHotel: true, includesCaddie: false,
+      nights: 4, rounds: 3, departureCity: '인천',
+      status: 'PUBLISHED', publishedAt: new Date('2026-04-01'),
+    },
+    {
+      productId: UI_IDS.clark,
+      supplierId: IDS.supplier.internal,
+      courseId:   IDS.venue.mimosa_clark,
+      destinationId: dest.philippines,
+      title: '클라크 3박 4일 2라운드 + 캐디 패키지',
+      description: '필리핀 최대 골프 타운 클라크에서 합리적인 비용으로 2라운드를 즐기세요.',
+      price: 720000,
+      includesFlight: false, includesHotel: true, includesCaddie: true,
+      nights: 3, rounds: 2, departureCity: '인천',
+      status: 'PUBLISHED', publishedAt: new Date('2026-04-01'),
+    },
+    {
+      productId: UI_IDS.bangkok,
+      supplierId: IDS.supplier.internal,
+      courseId:   IDS.venue.nikanti_bangkok,
+      destinationId: dest.thailand,
+      title: '방콕 4박 5일 4라운드 프리미엄 전세버스 투어',
+      description: '항공·호텔·캐디 ALL-IN 패키지. 방콕 근교 5성급 코스만 엄선했습니다.',
+      price: 1580000,
+      includesFlight: true, includesHotel: true, includesCaddie: true,
+      nights: 4, rounds: 4, departureCity: '인천',
+      status: 'PUBLISHED', publishedAt: new Date('2026-04-01'),
+    },
+    {
+      productId: UI_IDS.hoian,
+      supplierId: IDS.supplier.internal,
+      courseId:   IDS.venue.laguna_lang_co,
+      destinationId: dest.vietnam,
+      title: '호이안 3박 4일 2라운드 리조트 패키지',
+      description: '유네스코 세계문화유산 호이안 구시가지와 함께하는 골프 여행.',
+      price: 950000,
+      includesFlight: false, includesHotel: true, includesCaddie: true,
+      nights: 3, rounds: 2, departureCity: '인천',
+      status: 'PUBLISHED', publishedAt: new Date('2026-04-01'),
+    },
+    {
+      productId: UI_IDS.kotakina,
+      supplierId: IDS.supplier.internal,
+      courseId:   IDS.venue.tpc_kl,
+      destinationId: dest.malaysia,
+      title: '코타키나발루 4박 5일 3라운드 + 항공 패키지',
+      description: '열대우림과 바다가 어우러진 코타키나발루에서 항공 포함 3라운드 패키지.',
+      price: 1450000,
+      includesFlight: true, includesHotel: true, includesCaddie: false,
+      nights: 4, rounds: 3, departureCity: '인천',
+      status: 'PUBLISHED', publishedAt: new Date('2026-04-01'),
+    },
+  ]
+
+  for (const p of uiProductData) {
+    await prisma.product.upsert({
+      where:  { productId: p.productId },
+      update: {},
+      create: p,
+    })
+  }
+  console.log(`✅ UI Products: ${uiProductData.length}개`)
+
   // ── 5. 취소 정책 (각 상품에 4단계) ───────────────────────────────────────
   // 기존 정책 삭제 후 재생성 (upsert 미지원 → 멱등 처리)
-  const allProductIds = Object.values(IDS.product)
+  const allProductIds = [
+    ...Object.values(IDS.product),
+    ...Object.values(UI_IDS),
+  ]
   await prisma.cancellationPolicy.deleteMany({
     where: { productId: { in: allProductIds } },
   })
